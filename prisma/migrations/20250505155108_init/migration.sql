@@ -1,0 +1,7 @@
+-- CreateTable
+CREATE TABLE "Reading" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "timestamp" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "value" REAL NOT NULL,
+    "userId" TEXT NOT NULL
+);
