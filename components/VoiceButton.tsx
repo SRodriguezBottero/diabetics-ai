@@ -3,18 +3,45 @@ import { useEffect, useState } from 'react'
 
 interface Props { onResult: (text: string) => void }
 
+interface SpeechRecognition extends EventTarget {
+  lang: string;
+  continuous: boolean;
+  interimResults: boolean;
+  onresult: (event: SpeechRecognitionEvent) => void;
+  onend: () => void;
+  start: () => void;
+  stop: () => void;
+}
+
+declare global {
+  interface Window {
+    SpeechRecognition: new () => SpeechRecognition;
+    webkitSpeechRecognition: new () => SpeechRecognition;
+  }
+}
+
+interface SpeechRecognitionEvent {
+  results: {
+    [index: number]: {
+      [index: number]: {
+        transcript: string;
+      };
+    };
+  };
+}
+
 export default function VoiceButton({ onResult }: Props) {
-  const [rec, setRec] = useState<any>(null)
+  const [rec, setRec] = useState<SpeechRecognition | null>(null)
   const [listening, setListening] = useState(false)
 
   useEffect(() => {
-    const SpeechRecognition = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition
+    const SpeechRecognition = window.webkitSpeechRecognition || window.SpeechRecognition
     if (!SpeechRecognition) return
     const r = new SpeechRecognition()
     r.lang = 'es-ES'
     r.continuous = false
     r.interimResults = false
-    r.onresult = e => {
+    r.onresult = (e: SpeechRecognitionEvent) => {
       const text = e.results[0][0].transcript
       onResult(text)
       setListening(false)
@@ -34,7 +61,9 @@ export default function VoiceButton({ onResult }: Props) {
 
   return (
     <button
-      className={`p-2 rounded-full border ${listening? 'bg-red-200':'bg-white'}`}
+    className={`rounded-full p-3 border ${
+      listening ? 'bg-red-200' : 'bg-emerald-500 text-white'
+    }`}
       onClick={toggle}
     >
       🎤
