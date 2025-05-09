@@ -16,17 +16,15 @@ export default function RecentReadings({ userId }: { userId: string }) {
   if (!items.length) return null
 
   return (
-    <section className="bg-white shadow rounded-lg p-6">
+    <section className="bg-white shadow-md rounded-lg p-6">
       <h2 className="text-lg font-semibold mb-4">Mediciones recientes</h2>
       <ul className="divide-y divide-gray-200">
         {items
-          .slice(-5) // muestra las 5 más recientes
-          .reverse() // la última primero
+          .slice(-5)
+          .reverse()
           .map((r, i) => (
             <li key={i} className="py-2 flex justify-between text-sm">
-              <span className="font-medium text-indigo-700">
-                {r.value} mg/dL
-              </span>
+              <span className="font-medium text-indigo-700">{r.value} mg/dL</span>
               <span className="text-gray-500">
                 {format(new Date(r.timestamp), 'PPPP, p', { locale: es })}
               </span>

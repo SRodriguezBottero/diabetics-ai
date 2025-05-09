@@ -1,10 +1,15 @@
 import { useState, useEffect } from 'react'
 import ChatInterface from '../components/ChatInterface'
 import RecentReadings from '../components/RecentReadings'
+import HistoryChart from '../components/HistoryChart'
+import AIInsights from '../components/AIInsights'
+import ExportData from '../components/ExportData'
+import ShareWithDoctor from '../components/ShareWithDoctor'
 
 export default function Home() {
   const [value, setValue] = useState('')
   const [userId, setUserId] = useState('')
+  const [toast, setToast] = useState<string | null>(null)
 
   /* ─── genera / recupera userId ─── */
   useEffect(() => {
@@ -26,41 +31,59 @@ export default function Home() {
       body: JSON.stringify({ value: val, userId }),
     })
     setValue('')
+    setToast(`Registrado: ${val} mg/dL`)
+    setTimeout(() => setToast(null), 3000)
   }
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-100 to-white p-6">
-      <div className="max-w-3xl mx-auto space-y-6">
-        <h1 className="text-3xl font-extrabold text-indigo-700">Diabetics-AI</h1>
-      <div className="max-w-xl space-y-6">
-        {/* ───────── Añadir medición ───────── */}
-        <section className="bg-white shadow rounded-lg p-6 space-y-4">
-          <h2 className="text-lg font-semibold">Añadir nueva medición</h2>
+    <div className="min-h-screen bg-gradient-to-b from-gray-100 to-white py-6 px-2 sm:py-10 sm:px-4 lg:px-8">
+      <div className="max-w-3xl mx-auto space-y-6 sm:space-y-8">
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-indigo-700 text-center mb-2 sm:mb-0">
+          Diabetics-AI
+        </h1>
 
-          <div className="flex items-center gap-2">
-            <input
-              type="number"
-              placeholder="Nivel de glucosa"
-              className="flex-1 rounded-md border-gray-300"
-              value={value}
-              onChange={e => setValue(e.target.value)}
-            />
-            <span className="text-sm text-gray-500">mg/dL</span>
-            <button
-              className="inline-flex items-center gap-1 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-md px-3 py-2"
-              onClick={addReading}
-            >
-              <span className="text-lg leading-none">＋</span> Añadir
-            </button>
+        {/* Card: Añadir + Chat */}
+        <section className="bg-white shadow-md rounded-lg p-4 sm:p-6 space-y-4 sm:space-y-6">
+          <div>
+            <h2 className="text-base sm:text-lg font-semibold">Añadir nueva medición</h2>
+            <div className="mt-2 flex flex-col sm:flex-row gap-2">
+              <input
+                type="number"
+                placeholder="Nivel de glucosa"
+                className="flex-1 border-gray-300 rounded-md px-3 py-3 text-base sm:text-sm w-full sm:w-auto"
+                value={value}
+                onChange={e => setValue(e.target.value)}
+              />
+              <div className="flex gap-2 items-center">
+                <span className="text-sm text-gray-500">mg/dL</span>
+                <button
+                  className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-3 sm:py-2 rounded-md w-full sm:w-auto font-semibold"
+                  onClick={addReading}
+                >
+                  + Añadir
+                </button>
+              </div>
+            </div>
           </div>
 
-          {/* ───────── Chat ───────── */}
-          <h2 className="text-lg font-semibold mt-4">Habla conmigo</h2>
-          <ChatInterface userId={userId} />
+          <div>
+            <h2 className="text-base sm:text-lg font-semibold">Habla conmigo</h2>
+            <ChatInterface userId={userId} />
+          </div>
         </section>
-        {/* ───────── Lista de lecturas ───────── */}
+
+        {/* Card: Mediciones recientes */}
         <RecentReadings userId={userId} />
+        <HistoryChart userId={userId} />
+        <AIInsights userId={userId} />
+        <ExportData userId={userId} />
+        <ShareWithDoctor userId={userId} />
       </div>
-      </div>
+      {/* Toast/Snackbar */}
+      {toast && (
+        <div className="fixed left-1/2 bottom-8 transform -translate-x-1/2 bg-emerald-600 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-fade-in">
+          {toast}
+        </div>
+      )}
     </div>
   )
 }
