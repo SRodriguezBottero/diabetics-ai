@@ -126,7 +126,7 @@ export default function ChatInterface({ userId }: { userId: string }) {
       </div>
 
       <div className="flex space-x-2">
-        <VoiceButton onResult={setInput} />
+        <VoiceButton onResult={text => { setInput(text); send(text); }} />
         <input
           className="flex-1 border p-2 rounded"
           value={input}
