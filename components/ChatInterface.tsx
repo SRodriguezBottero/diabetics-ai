@@ -4,7 +4,9 @@ import VoiceButton from './VoiceButton'
 type Msg = { role: 'user' | 'assistant'; content: string }
 
 export default function ChatInterface({ userId }: { userId: string }) {
-  const [msgs, setMsgs] = useState<Msg[]>([])
+  const [msgs, setMsgs] = useState<Msg[]>([
+    { role: 'assistant', content: '¡Hola! ¿En qué puedo ayudarte hoy? Si tienes preguntas sobre tu salud o los datos de glucosa que compartiste, no dudes en decírmelo.' }
+  ])
   const [input, setInput] = useState('')
   const [toast, setToast] = useState<string | null>(null)
 
@@ -74,7 +76,10 @@ export default function ChatInterface({ userId }: { userId: string }) {
 
   const send = async (content: string) => {
     if (!content.trim()) return
-    setMsgs(m => [...m, { role: 'user', content }])
+
+    // Construir el historial actualizado manualmente
+    const updatedMsgs = [...msgs, { role: 'user' as const, content }] as Msg[]
+    setMsgs(updatedMsgs)
     setInput('')
 
     // 1. Voice-driven logging
@@ -104,7 +109,7 @@ export default function ChatInterface({ userId }: { userId: string }) {
     const res = await fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ messages: msgs, userId })
+      body: JSON.stringify({ messages: updatedMsgs, userId })
     })
     const { reply } = await res.json()
     setMsgs(m => [...m, { role: 'assistant', content: reply.content }])
