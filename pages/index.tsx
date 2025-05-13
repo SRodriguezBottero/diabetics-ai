@@ -5,6 +5,8 @@ import HistoryChart from '../components/HistoryChart'
 import AIInsights from '../components/AIInsights'
 import ExportData from '../components/ExportData'
 import ShareWithDoctor from '../components/ShareWithDoctor'
+import MealClassifier from '../components/MealClassifier'
+import { v4 as uuidv4 } from 'uuid'
 
 export default function Home() {
   const [value, setValue] = useState('')
@@ -15,7 +17,7 @@ export default function Home() {
   useEffect(() => {
     let id = localStorage.getItem('userId')
     if (!id) {
-      id = crypto.randomUUID()
+      id = uuidv4()
       localStorage.setItem('userId', id)
     }
     setUserId(id)
@@ -77,6 +79,7 @@ export default function Home() {
         <AIInsights userId={userId} />
         <ExportData userId={userId} />
         <ShareWithDoctor userId={userId} />
+        <MealClassifier />
       </div>
       {/* Toast/Snackbar */}
       {toast && (

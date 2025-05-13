@@ -16,6 +16,7 @@ export default function ChatInterface({ userId }: { userId: string }) {
     new Date(ts).toLocaleString('es-ES', { dateStyle: 'short', timeStyle: 'short' })
 
   const getLastReading = async () => {
+    if (!userId) return 'Cargando usuario...';
     const r = await fetch(`/api/readings/${userId}/last`)
     if (!r.ok) return 'Aún no tienes lecturas registradas.'
     const { value, timestamp } = await r.json()
@@ -23,6 +24,7 @@ export default function ChatInterface({ userId }: { userId: string }) {
   }
 
   const getAllReadings = async () => {
+    if (!userId) return 'Cargando usuario...';
     const r = await fetch(`/api/readings?userId=${userId}`)
     if (!r.ok) return 'No pude recuperar tu historial.'
     const arr: { value: number; timestamp: string }[] = await r.json()
@@ -86,9 +88,10 @@ export default function ChatInterface({ userId }: { userId: string }) {
     if (await tryVoiceLog(content)) return
 
     const norm = normalize(content)
+    console.log('Frase normalizada:', norm)
 
     /* 2. Último control / medición */
-    if (/(ultimo|ultima).*?(glicemia|glucosa|medic|valor)/.test(norm)) {
+    if (/(ultimo|ultima).*?(glic|gluc|medic|valor|result)/.test(norm)) {
       const reply = await getLastReading()
       setMsgs(h => [...h, { role: 'assistant', content: reply }])
       await playTTS(reply)
