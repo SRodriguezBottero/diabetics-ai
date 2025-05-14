@@ -12,7 +12,7 @@ export default function App({ Component, pageProps }: AppProps) {
     }
   }, [])
   return <>
-    <Reminder />
-    <Component {...pageProps}/>
-  </>
-}
+      <Reminder />
+      <Component {...pageProps}/>
+    </>
+} 

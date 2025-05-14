@@ -42,7 +42,6 @@ export default function Home() {
         <h1 className="text-2xl sm:text-3xl font-extrabold text-indigo-700 text-center mb-2 sm:mb-0">
           Diabetics-AI
         </h1>
-
         {/* Card: Añadir + Chat */}
         <section className="bg-white shadow-md rounded-lg p-4 sm:p-6 space-y-4 sm:space-y-6">
           <div>
@@ -89,4 +88,4 @@ export default function Home() {
       )}
     </div>
   )
-}
+} 

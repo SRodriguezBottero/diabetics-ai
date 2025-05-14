@@ -11,9 +11,11 @@
   "dependencies": {
     "@prisma/client": "^6.7.0",
     "chart.js": "^4.4.9",
+    "chartjs-adapter-date-fns": "^3.0.0",
     "classnames": "^2.5.1",
     "date-fns": "^4.1.0",
     "formidable": "^2.1.4",
+    "jspdf": "^3.0.1",
     "next": "15.1.4",
     "openai": "^4.97.0",
     "react": "^19.0.0",

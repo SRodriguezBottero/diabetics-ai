@@ -1,16 +1,22 @@
 import { useState } from 'react'
 
 type MealResult =
-  | { label: string; carbs: number | null; confidence?: string }
+  | {
+      label: string
+      carbs: number | null
+      protein?: number | null
+      fat?: number | null
+      fiber?: number | null
+      confidence?: string
+      suggestion?: string
+    }
   | { label: 'desconocido' }
 
 export default function MealClassifier() {
   const [result, setResult] = useState<MealResult | null>(null)
   const [loading, setLoading] = useState(false)
 
-  const handleFileChange = async (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files?.length) return
     const file = e.target.files[0]
 
@@ -21,12 +27,32 @@ export default function MealClassifier() {
     formData.append('image', file)
 
     try {
-      const res = await fetch('/api/classify_meal', {
-        method: 'POST',
-        body: formData,
-      })
+      const res = await fetch('/api/classify_meal', { method: 'POST', body: formData })
       const data = await res.json()
       setResult(data)
+
+      /* ─── Generar sugerencia amigable si el backend no envía una ─── */
+      if (data.label !== 'desconocido' && !data.suggestion) {
+        const highFat = data.fat && data.fat > 20
+        const highCarb = data.carbs && data.carbs > 60
+
+        data.suggestion = (() => {
+          if (highCarb) {
+            return (
+              'Este plato es alto en carbohidratos. ' +
+              'Ejemplos para equilibrarlo: añade 1 pechuga de pollo a la plancha ' +
+              'o un puñado de garbanzos y una ensalada verde (fibra) para evitar picos de glucosa.'
+            )
+          }
+          if (highFat) {
+            return (
+              'Tiene bastante grasa. ' +
+              'Prueba acompañarlo con vegetales al vapor o una ensalada de hojas frescas para aligerarlo.'
+            )
+          }
+          return 'Porción equilibrada. Puedes acompañarla con agua o una infusión sin azúcar. ¡Buen provecho!'
+        })()
+      }
     } catch (err) {
       console.error(err)
       setResult({ label: 'desconocido' })
@@ -52,17 +78,39 @@ export default function MealClassifier() {
       {!loading && result && (
         <div className="mt-4 text-sm">
           {result.label !== 'desconocido' ? (
-            <p>
-              Esta porción parece <b>{result.label}</b>
-              {'carbs' in result && result.carbs != null && (
-                <>
-                  : &nbsp;~<b>{result.carbs}</b> g carbs
-                </>
+            <div className="space-y-1">
+              <p>
+                Esta porción parece <b>{result.label}</b>
+                {('confidence' in result && result.confidence) && <> ({result.confidence})</>}
+              </p>
+
+              {/* Tabla de macronutrientes */}
+              <table className="text-xs">
+                <tbody>
+                  <tr>
+                    <td className="pr-2">Carbs:</td>
+                    <td>{('carbs' in result ? result.carbs : '—')} g</td>
+                  </tr>
+                  <tr>
+                    <td className="pr-2">Proteína:</td>
+                    <td>{('protein' in result ? result.protein : '—')} g</td>
+                  </tr>
+                  <tr>
+                    <td className="pr-2">Grasa:</td>
+                    <td>{('fat' in result ? result.fat : '—')} g</td>
+                  </tr>
+                  <tr>
+                    <td className="pr-2">Fibra:</td>
+                    <td>{('fiber' in result ? result.fiber : '—')} g</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              {/* Sugerencia nutricional */}
+              {'suggestion' in result && result.suggestion && (
+                <p className="mt-1 italic text-emerald-700">{result.suggestion}</p>
               )}
-              {'confidence' in result && result.confidence && (
-                <> ({result.confidence} confiabilidad)</>
-              )}
-            </p>
+            </div>
           ) : (
             <p>No pude reconocer la comida 🙁</p>
           )}
