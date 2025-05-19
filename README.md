@@ -1,36 +1,66 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Diabetics-AI
 
-## Getting Started
+Diabetics‑AI is an experimental Next.js app that assists people with diabetes in tracking their glucose levels. The application stores readings locally in SQLite using Prisma and leverages OpenAI for conversational help and data analysis.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Chatbot** – talk with an AI assistant (Spanish responses) using text or voice.
+- **Glucose history** – log readings, view recent entries and a chart with anomaly warnings.
+- **AI insights** – brief analysis of the last readings powered by OpenAI.
+- **Meal classifier** – upload a food photo and get an estimate of carbohydrates and a serving suggestion.
+- **Export & share** – download your data as CSV or create a PDF report to share with a doctor.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Setup
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Install [Node.js](https://nodejs.org) (v18 or newer recommended).
+2. Run `npm install` to install dependencies.
+3. Configure the environment variables listed below in a `.env` file.
+4. Initialize the database with Prisma migrations:
+   ```bash
+   npx prisma migrate dev
+   ```
+5. Start the development server:
+   ```bash
+   npm run dev
+   ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Environment variables
 
-## Learn More
+- `OPENAI_API_KEY` – API key for OpenAI, required for chat, insights and text‑to‑speech.
+- `DATABASE_URL` – connection string for Prisma. For local development the repo uses SQLite:
+  ```env
+  DATABASE_URL="file:./prisma/dev.db"
+  ```
+  After editing the schema run `npx prisma generate` or `npx prisma migrate dev` to apply changes.
 
-To learn more about Next.js, take a look at the following resources:
+## Useful commands
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `npm run dev` – run the Next.js dev server.
+- `npm run build` – create a production build.
+- `npx prisma migrate dev` – apply migrations and generate Prisma client.
+- `npx prisma studio` – open the Prisma GUI to inspect data.
+- `npm run lint` – run ESLint.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## API overview
 
-## Deploy on Vercel
+| Endpoint | Method | Description |
+| --- | --- | --- |
+| `/api/readings` | `POST` | Save a glucose reading. |
+| `/api/readings` | `GET` | List all readings for a user. Requires `userId` query parameter. |
+| `/api/readings/[userId]/last` | `GET` | Fetch the last recorded reading. |
+| `/api/chat` | `POST` | Send chat messages to the assistant. |
+| `/api/insights` | `GET` | Get a short analysis of recent readings. Requires `userId`. |
+| `/api/classify_meal` | `POST` | Upload a meal photo for nutrition estimation. |
+| `/api/tts` | `POST` | Generate speech audio using OpenAI TTS. |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Main components
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `ChatInterface` – chat UI with voice input and special commands to log or retrieve readings.
+- `HistoryChart` – chart of past readings with anomaly alerts.
+- `AIInsights` – shows the result returned by `/api/insights`.
+- `MealClassifier` – handles the meal photo upload and response display.
+- `ExportData` and `ShareWithDoctor` – allow downloading CSV data or generating a PDF report.
+
+---
+
+This project is for demonstration purposes only and should not replace professional medical advice.
