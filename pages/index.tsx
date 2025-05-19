@@ -3,6 +3,7 @@ import ChatInterface from '../components/ChatInterface'
 import RecentReadings from '../components/RecentReadings'
 import HistoryChart from '../components/HistoryChart'
 import AIInsights from '../components/AIInsights'
+import GlucosePrediction from '../components/GlucosePrediction'
 import ExportData from '../components/ExportData'
 import ShareWithDoctor from '../components/ShareWithDoctor'
 import MealClassifier from '../components/MealClassifier'
@@ -75,6 +76,7 @@ export default function Home() {
         {/* Card: Mediciones recientes */}
         <RecentReadings userId={userId} />
         <HistoryChart userId={userId} />
+        <GlucosePrediction userId={userId} />
         <AIInsights userId={userId} />
         <ExportData userId={userId} />
         <ShareWithDoctor userId={userId} />
