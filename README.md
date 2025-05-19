@@ -7,6 +7,7 @@ Diabetics‑AI is an experimental Next.js app that assists people with diabetes 
 - **Chatbot** – talk with an AI assistant (Spanish responses) using text or voice.
 - **Glucose history** – log readings, view recent entries and a chart with anomaly warnings.
 - **AI insights** – brief analysis of the last readings powered by OpenAI.
+- **Predictive alerts** – forecast upcoming glucose levels and warn about potential highs or lows.
 - **Meal classifier** – upload a food photo and get an estimate of carbohydrates and a serving suggestion.
 - **Export & share** – download your data as CSV or create a PDF report to share with a doctor.
 
