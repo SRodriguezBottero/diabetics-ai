@@ -10,7 +10,7 @@ export function useVoices(langPrefix = 'es') {
       setVoices(all.filter(v => v.lang.startsWith(langPrefix)))
     }
     load()
-    window.speechSynthesis.onvoiceschanged = load   // se dispara async :contentReference[oaicite:1]{index=1}
+    window.speechSynthesis.onvoiceschanged = load   // se dispara async
     return () => { window.speechSynthesis.onvoiceschanged = null }
   }, [langPrefix])
 
