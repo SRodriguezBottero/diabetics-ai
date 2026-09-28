@@ -7,6 +7,8 @@ import AIInsights from '../components/AIInsights'
 import ExportData from '../components/ExportData'
 import ShareWithDoctor from '../components/ShareWithDoctor'
 import MealClassifier from '../components/MealClassifier'
+import PlanIndicator from '../components/PlanIndicator'
+import UsageMeter from '../components/UsageMeter'
 
 interface ToastMessage {
   text: string
@@ -97,6 +99,7 @@ export default function Home() {
             )}
           </div>
           <div className="flex items-center gap-3">
+            <PlanIndicator />
             <span className="text-sm text-gray-600 hidden sm:inline">
               {session?.user?.email}
             </span>
@@ -108,6 +111,8 @@ export default function Home() {
             </button>
           </div>
         </header>
+
+        <UsageMeter />
 
         <section className="bg-white shadow-md rounded-lg p-4 sm:p-6 space-y-4 sm:space-y-6">
           <div>

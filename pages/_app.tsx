@@ -8,7 +8,7 @@ import { useEffect } from 'react'
 import { SessionProvider, useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 
-const publicPages = ['/login']
+const publicPages = ['/login', '/pricing']
 
 function AuthGuard({ children }: { children: React.ReactNode }) {
   const { data: session, status } = useSession()

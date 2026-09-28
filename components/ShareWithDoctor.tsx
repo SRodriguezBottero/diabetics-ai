@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import jsPDF from 'jspdf';
 
 async function fetchReadings() {
@@ -14,8 +15,26 @@ async function fetchInsight() {
 export default function ShareWithDoctor() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isPremium, setIsPremium] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const checkSubscription = async () => {
+      try {
+        const res = await fetch('/api/subscription');
+        if (res.ok) {
+          const data = await res.json();
+          setIsPremium(data.isPremium);
+        }
+      } catch (e) {
+        console.error('Error checking subscription:', e);
+      }
+    };
+    checkSubscription();
+  }, []);
 
   const handleShare = async () => {
+    if (!isPremium) return;
+    
     setLoading(true);
     setError(null);
     try {
@@ -59,6 +78,40 @@ export default function ShareWithDoctor() {
       setLoading(false);
     }
   };
+
+  if (isPremium === null) {
+    return (
+      <section className="bg-white shadow rounded-lg p-4 mb-4">
+        <div className="text-gray-400 text-sm">Cargando...</div>
+      </section>
+    );
+  }
+
+  if (!isPremium) {
+    return (
+      <section className="bg-white shadow rounded-lg p-4 mb-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="font-semibold text-gray-800">Compartir con Doctor</h3>
+            <p className="text-sm text-gray-500 mt-1">
+              Genera un reporte PDF profesional para tu médico
+            </p>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-amber-100 text-amber-800">
+              ⭐ Premium
+            </span>
+            <Link
+              href="/pricing"
+              className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-md font-semibold text-sm"
+            >
+              Actualizar
+            </Link>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="bg-white shadow rounded-lg p-4 mb-4 flex items-center gap-4">
