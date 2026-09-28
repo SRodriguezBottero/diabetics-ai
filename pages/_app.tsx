@@ -1,18 +1,18 @@
 import '../styles/globals.css'
 import Reminder from '../components/Reminder'
+import PWAInstallPrompt from '../components/PWAInstallPrompt'
+import OfflineIndicator from '../components/OfflineIndicator'
+import ServiceWorkerUpdater from '../components/ServiceWorkerUpdater'
 import type { AppProps } from 'next/app'
-import { useEffect } from 'react'
 
 export default function App({ Component, pageProps }: AppProps) {
-  useEffect(() => {
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
-      })
-    }
-  }, [])
-  return <>
+  return (
+    <>
+      <ServiceWorkerUpdater />
+      <OfflineIndicator />
       <Reminder />
-      <Component {...pageProps}/>
+      <Component {...pageProps} />
+      <PWAInstallPrompt />
     </>
-} 
+  )
+}
