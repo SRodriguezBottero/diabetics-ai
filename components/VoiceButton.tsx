@@ -1,5 +1,6 @@
 // components/VoiceButton.tsx
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/router'
 
 interface Props { onResult: (text: string) => void }
 
@@ -41,6 +42,7 @@ interface SpeechRecognitionEvent {
 }
 
 export default function VoiceButton({ onResult }: Props) {
+  const { locale } = useRouter()
   const [rec, setRec] = useState<SpeechRecognition | null>(null)
   const [listening, setListening] = useState(false)
   const [text, setText] = useState('')
@@ -48,33 +50,28 @@ export default function VoiceButton({ onResult }: Props) {
   useEffect(() => {
     const SpeechRecognition = window.webkitSpeechRecognition || window.SpeechRecognition
     if (!SpeechRecognition) {
-      console.log('Speech Recognition no está disponible')
+      console.log('Speech Recognition is not available')
       return
     }
 
     const r = new SpeechRecognition()
-    r.lang = 'es-ES'
+    r.lang = locale === 'en' ? 'en-US' : 'es-ES'
     r.continuous = true
     r.interimResults = true
 
     r.onresult = (e: SpeechRecognitionEvent) => {
       try {
-        // Obtener los índices de los resultados
         const resultIndexes = Object.keys(e.results).filter(k => !isNaN(Number(k)))
         if (resultIndexes.length === 0) {
-          console.log('No hay resultados')
           return
         }
-        // Tomar el último resultado
         const lastIndex = Number(resultIndexes[resultIndexes.length - 1])
         const lastResult = e.results[lastIndex]
         if (!lastResult || !lastResult[0]) {
-          console.log('No hay resultado final')
           return
         }
         const transcript = lastResult[0].transcript
         const isFinal = lastResult.isFinal
-        console.log('Transcripción:', transcript, '¿Es final?', isFinal)
         if (isFinal) {
           const newText = text + ' ' + transcript
           const finalText = newText.trim()
@@ -82,31 +79,29 @@ export default function VoiceButton({ onResult }: Props) {
           onResult(finalText)
         }
       } catch (error) {
-        console.error('Error procesando resultado:', error)
+        console.error('Error processing result:', error)
       }
     }
 
     r.onend = () => {
-      console.log('Reconocimiento terminado, listening:', listening)
       if (listening) {
         try {
           r.start()
         } catch (error) {
-          console.error('Error reiniciando reconocimiento:', error)
+          console.error('Error restarting recognition:', error)
         }
       }
     }
 
     r.onerror = (event: SpeechRecognitionErrorEvent) => {
-      console.error('Error en reconocimiento:', event.error, event.message)
+      console.error('Recognition error:', event.error, event.message)
     }
 
     setRec(r)
-  }, [text, listening, onResult])
+  }, [text, listening, onResult, locale])
 
   const toggle = () => {
     if (!rec) {
-      console.log('No hay reconocimiento disponible')
       return
     }
     if (listening) {
@@ -118,7 +113,7 @@ export default function VoiceButton({ onResult }: Props) {
           setText('')
         }
       } catch (error) {
-        console.error('Error deteniendo reconocimiento:', error)
+        console.error('Error stopping recognition:', error)
       }
     } else {
       try {
@@ -126,7 +121,7 @@ export default function VoiceButton({ onResult }: Props) {
         setText('')
         rec.start()
       } catch (error) {
-        console.error('Error iniciando reconocimiento:', error)
+        console.error('Error starting recognition:', error)
         setListening(false)
       }
     }

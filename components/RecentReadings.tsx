@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { format } from 'date-fns'
-import { es } from 'date-fns/locale'
+import { es, enUS } from 'date-fns/locale'
+import { useTranslation } from 'react-i18next'
+import { useRouter } from 'next/router'
 
 interface Reading {
   id?: string
@@ -10,6 +12,8 @@ interface Reading {
 }
 
 export default function RecentReadings() {
+  const { t } = useTranslation('common')
+  const { locale } = useRouter()
   const [items, setItems] = useState<Reading[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isOffline, setIsOffline] = useState(false)
@@ -72,7 +76,7 @@ export default function RecentReadings() {
   if (isLoading && !items.length) {
     return (
       <section className="bg-white shadow-md rounded-lg p-6">
-        <h2 className="text-lg font-semibold mb-4">Mediciones recientes</h2>
+        <h2 className="text-lg font-semibold mb-4">{t('readings.recent')}</h2>
         <div className="animate-pulse space-y-3">
           {[1, 2, 3].map(i => (
             <div key={i} className="h-8 bg-gray-100 rounded" />
@@ -84,14 +88,16 @@ export default function RecentReadings() {
 
   if (!items.length) return null
 
+  const dateLocale = locale === 'en' ? enUS : es
+
   return (
     <section className="bg-white shadow-md rounded-lg p-6">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold">Mediciones recientes</h2>
+        <h2 className="text-lg font-semibold">{t('readings.recent')}</h2>
         {isOffline && (
           <span className="inline-flex items-center gap-1.5 text-xs text-amber-600 bg-amber-50 px-2 py-1 rounded-full">
             <span className="w-1.5 h-1.5 bg-amber-500 rounded-full" />
-            Datos en caché
+            {t('offline.cachedData')}
           </span>
         )}
       </div>
@@ -109,12 +115,12 @@ export default function RecentReadings() {
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                     </svg>
-                    Pendiente
+                    {t('offline.pending')}
                   </span>
                 )}
               </div>
               <span className="text-gray-500">
-                {format(new Date(r.timestamp), 'PPPP, p', { locale: es })}
+                {format(new Date(r.timestamp), 'PPPP, p', { locale: dateLocale })}
               </span>
             </li>
           ))}
