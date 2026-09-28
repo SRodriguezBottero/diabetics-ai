@@ -2,16 +2,18 @@ import { useEffect, useState } from 'react'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 
-export default function RecentReadings({ userId }: { userId: string }) {
+export default function RecentReadings() {
   const [items, setItems] = useState<
     { value: number; timestamp: string }[]
   >([])
 
   useEffect(() => {
-    fetch(`/api/readings?userId=${userId}`)
+    fetch('/api/readings')
       .then(r => r.json())
-      .then(setItems)
-  }, [userId])
+      .then(data => {
+        if (Array.isArray(data)) setItems(data)
+      })
+  }, [])
 
   if (!items.length) return null
 

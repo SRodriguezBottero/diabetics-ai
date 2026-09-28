@@ -1,25 +1,24 @@
 import { useEffect, useState } from 'react';
 
-export default function AIInsights({ userId }: { userId: string }) {
+export default function AIInsights() {
   const [insight, setInsight] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!userId) return;
     setLoading(true);
     setError(null);
-    fetch(`/api/insights?userId=${userId}`)
+    fetch('/api/insights')
       .then(r => r.json())
       .then(data => {
-        setInsight(data.insight);
+        setInsight(data.insight || '');
         setLoading(false);
       })
       .catch(() => {
         setError('No se pudo obtener el análisis de la IA.');
         setLoading(false);
       });
-  }, [userId]);
+  }, []);
 
   return (
     <section className="bg-emerald-50 shadow-md rounded-lg p-6">

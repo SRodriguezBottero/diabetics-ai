@@ -1,4 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
+import { getServerSession } from 'next-auth'
+import { authOptions } from './auth/[...nextauth]'
 import OpenAI from 'openai'
 import prisma from '../../lib/prisma'
 
@@ -7,10 +9,14 @@ const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'GET') return res.status(405).end()
 
-  const { userId } = req.query as { userId: string }
-  if (!userId) return res.status(400).json({ error: 'Missing userId' })
+  const session = await getServerSession(req, res, authOptions)
+  
+  if (!session?.user?.id) {
+    return res.status(401).json({ error: 'No autenticado' })
+  }
 
-  // Fetch last 30 readings (or all if less)
+  const userId = session.user.id
+
   const readings = await prisma.reading.findMany({
     where: { userId },
     orderBy: { timestamp: 'asc' },

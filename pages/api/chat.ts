@@ -1,5 +1,7 @@
 // pages/api/chat.ts
 import type { NextApiRequest, NextApiResponse } from 'next'
+import { getServerSession } from 'next-auth'
+import { authOptions } from './auth/[...nextauth]'
 import OpenAI from 'openai'
 import prisma from '../../lib/prisma'
 
@@ -8,24 +10,27 @@ const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') return res.status(405).end()
 
-  // 1) Extraemos messages y userId del body
-  const { messages, userId } = req.body as {
-    messages?: { role: 'user' | 'assistant' | 'system'; content: string }[],
-    userId?: string
+  const session = await getServerSession(req, res, authOptions)
+  
+  if (!session?.user?.id) {
+    return res.status(401).json({ error: 'No autenticado' })
+  }
+
+  const userId = session.user.id
+
+  const { messages } = req.body as {
+    messages?: { role: 'user' | 'assistant' | 'system'; content: string }[]
   }
 
   let systemContext = ''
-  if (userId) {
-    // Fetch last 30 readings for context
-    const readings = await prisma.reading.findMany({
-      where: { userId },
-      orderBy: { timestamp: 'asc' },
-      take: 30,
-    })
-    if (readings.length) {
-      const data = readings.map(r => `${r.timestamp}: ${r.value} mg/dL`).join('\n')
-      systemContext = `Estos son los últimos valores de glucosa del usuario:\n${data}\nPuedes usar estos datos para responder preguntas sobre su salud.`
-    }
+  const readings = await prisma.reading.findMany({
+    where: { userId },
+    orderBy: { timestamp: 'asc' },
+    take: 30,
+  })
+  if (readings.length) {
+    const data = readings.map(r => `${r.timestamp}: ${r.value} mg/dL`).join('\n')
+    systemContext = `Estos son los últimos valores de glucosa del usuario:\n${data}\nPuedes usar estos datos para responder preguntas sobre su salud.`
   }
 
   // 2) Si viene vacío o undefined, creamos uno de sistema

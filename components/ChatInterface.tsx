@@ -3,7 +3,7 @@ import VoiceButton from './VoiceButton'
 
 type Msg = { role: 'user' | 'assistant'; content: string }
 
-export default function ChatInterface({ userId }: { userId: string }) {
+export default function ChatInterface() {
   const [msgs, setMsgs] = useState<Msg[]>([
     { role: 'assistant', content: '¡Hola! ¿En qué puedo ayudarte hoy? Si tienes preguntas sobre tu salud o los datos de glucosa que compartiste, no dudes en decírmelo.' }
   ])
@@ -16,16 +16,14 @@ export default function ChatInterface({ userId }: { userId: string }) {
     new Date(ts).toLocaleString('es-ES', { dateStyle: 'short', timeStyle: 'short' })
 
   const getLastReading = async () => {
-    if (!userId) return 'Cargando usuario...';
-    const r = await fetch(`/api/readings/${userId}/last`)
+    const r = await fetch('/api/readings/last')
     if (!r.ok) return 'Aún no tienes lecturas registradas.'
     const { value, timestamp } = await r.json()
     return `Tu último control fue ${value} mg/dL el ${fmt(timestamp)}.`
   }
 
   const getAllReadings = async () => {
-    if (!userId) return 'Cargando usuario...';
-    const r = await fetch(`/api/readings?userId=${userId}`)
+    const r = await fetch('/api/readings')
     if (!r.ok) return 'No pude recuperar tu historial.'
     const arr: { value: number; timestamp: string }[] = await r.json()
     if (!arr.length) return 'Aún no tienes lecturas registradas.'
@@ -57,11 +55,10 @@ export default function ChatInterface({ userId }: { userId: string }) {
     if (match && match[1]) {
       const value = parseInt(match[1], 10)
       if (!isNaN(value)) {
-        // Log the value
         await fetch('/api/readings', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ value, userId }),
+          body: JSON.stringify({ value }),
         })
         const reply = `Registrado: ${value} mg/dL.`
         setMsgs(m => [...m, { role: 'user', content }, { role: 'assistant', content: reply }])
@@ -112,7 +109,7 @@ export default function ChatInterface({ userId }: { userId: string }) {
     const res = await fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ messages: updatedMsgs, userId })
+      body: JSON.stringify({ messages: updatedMsgs })
     })
     const { reply } = await res.json()
     setMsgs(m => [...m, { role: 'assistant', content: reply.content }])
