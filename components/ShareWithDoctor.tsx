@@ -53,7 +53,7 @@ export default function ShareWithDoctor({ userId }: { userId: string }) {
         }
       });
       doc.save('reporte-glucosa.pdf');
-    } catch (e) {
+    } catch {
       setError('No se pudo generar el PDF.');
     } finally {
       setLoading(false);
