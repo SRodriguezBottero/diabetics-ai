@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useSession, signOut } from 'next-auth/react'
 import ChatInterface from '../components/ChatInterface'
 import RecentReadings from '../components/RecentReadings'
 import HistoryChart from '../components/HistoryChart'
@@ -6,7 +7,6 @@ import AIInsights from '../components/AIInsights'
 import ExportData from '../components/ExportData'
 import ShareWithDoctor from '../components/ShareWithDoctor'
 import MealClassifier from '../components/MealClassifier'
-import { v4 as uuidv4 } from 'uuid'
 
 interface ToastMessage {
   text: string
@@ -14,20 +14,11 @@ interface ToastMessage {
 }
 
 export default function Home() {
+  const { data: session } = useSession()
   const [value, setValue] = useState('')
-  const [userId, setUserId] = useState('')
   const [toast, setToast] = useState<ToastMessage | null>(null)
   const [isOnline, setIsOnline] = useState(true)
   const [pendingReadings, setPendingReadings] = useState(0)
-
-  useEffect(() => {
-    let id = localStorage.getItem('userId')
-    if (!id) {
-      id = uuidv4()
-      localStorage.setItem('userId', id)
-    }
-    setUserId(id)
-  }, [])
 
   useEffect(() => {
     setIsOnline(navigator.onLine)
@@ -65,7 +56,7 @@ export default function Home() {
       const response = await fetch('/api/readings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ value: val, userId }),
+        body: JSON.stringify({ value: val }),
       })
 
       setValue('')
@@ -94,15 +85,28 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-100 to-white py-6 px-2 sm:py-10 sm:px-4 lg:px-8">
       <div className="max-w-3xl mx-auto space-y-6 sm:space-y-8">
-        <header className="text-center">
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-indigo-700 mb-2 sm:mb-0">
-            Diabetics-AI
-          </h1>
-          {!isOnline && (
-            <p className="text-sm text-amber-600 mt-1">
-              Modo sin conexión
-            </p>
-          )}
+        <header className="flex justify-between items-center">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-indigo-700">
+              Diabetics-AI
+            </h1>
+            {!isOnline && (
+              <p className="text-sm text-amber-600 mt-1">
+                Modo sin conexión
+              </p>
+            )}
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="text-sm text-gray-600 hidden sm:inline">
+              {session?.user?.email}
+            </span>
+            <button
+              onClick={() => signOut({ callbackUrl: '/login' })}
+              className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-1.5 rounded-md text-sm font-medium"
+            >
+              Cerrar sesión
+            </button>
+          </div>
         </header>
 
         <section className="bg-white shadow-md rounded-lg p-4 sm:p-6 space-y-4 sm:space-y-6">
@@ -132,15 +136,15 @@ export default function Home() {
 
           <div>
             <h2 className="text-base sm:text-lg font-semibold">Habla conmigo</h2>
-            <ChatInterface userId={userId} />
+            <ChatInterface />
           </div>
         </section>
 
-        <RecentReadings userId={userId} />
-        <HistoryChart userId={userId} />
-        <AIInsights userId={userId} />
-        <ExportData userId={userId} />
-        <ShareWithDoctor userId={userId} />
+        <RecentReadings />
+        <HistoryChart />
+        <AIInsights />
+        <ExportData />
+        <ShareWithDoctor />
         <MealClassifier />
       </div>
 

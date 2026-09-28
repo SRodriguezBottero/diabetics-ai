@@ -102,7 +102,7 @@ export default function VoiceButton({ onResult }: Props) {
     }
 
     setRec(r)
-  }, [text])
+  }, [text, listening, onResult])
 
   const toggle = () => {
     if (!rec) {

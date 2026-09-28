@@ -9,13 +9,13 @@ interface Reading {
   pending?: boolean
 }
 
-export default function RecentReadings({ userId }: { userId: string }) {
+export default function RecentReadings() {
   const [items, setItems] = useState<Reading[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isOffline, setIsOffline] = useState(false)
 
   useEffect(() => {
-    const CACHE_KEY = `diabetics-ai-readings-cache-${userId}`
+    const CACHE_KEY = 'diabetics-ai-readings-cache'
     
     const loadCached = () => {
       try {
@@ -30,7 +30,7 @@ export default function RecentReadings({ userId }: { userId: string }) {
 
     const fetchData = async () => {
       try {
-        const response = await fetch(`/api/readings?userId=${userId}`)
+        const response = await fetch('/api/readings')
         if (response.ok) {
           const data = await response.json()
           setItems(data)
@@ -67,7 +67,7 @@ export default function RecentReadings({ userId }: { userId: string }) {
       window.removeEventListener('online', handleOnline)
       window.removeEventListener('offline', handleOffline)
     }
-  }, [userId])
+  }, [])
 
   if (isLoading && !items.length) {
     return (
