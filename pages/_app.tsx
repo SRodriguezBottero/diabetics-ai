@@ -1,5 +1,8 @@
 import '../styles/globals.css'
 import Reminder from '../components/Reminder'
+import PWAInstallPrompt from '../components/PWAInstallPrompt'
+import OfflineIndicator from '../components/OfflineIndicator'
+import ServiceWorkerUpdater from '../components/ServiceWorkerUpdater'
 import type { AppProps } from 'next/app'
 import { useEffect } from 'react'
 import { SessionProvider, useSession } from 'next-auth/react'
@@ -39,24 +42,19 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
 }
 
 function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
-  useEffect(() => {
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
-      })
-    }
-  }, [])
-
   return (
     <SessionProvider session={session}>
       <LanguageProvider>
+        <ServiceWorkerUpdater />
+        <OfflineIndicator />
         <AuthGuard>
           <Reminder />
           <Component {...pageProps} />
         </AuthGuard>
+        <PWAInstallPrompt />
       </LanguageProvider>
     </SessionProvider>
   )
 }
 
-export default appWithTranslation(App) 
+export default appWithTranslation(App)

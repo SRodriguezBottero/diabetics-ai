@@ -26,6 +26,7 @@
     "add": "+ Add",
     "unit": "mg/dL",
     "registered": "Registered: {{value}} mg/dL",
+    "invalidValue": "Please enter a valid value",
     "recent": "Recent readings",
     "noReadings": "You don't have any readings yet.",
     "couldNotRetrieve": "Could not retrieve your history.",
@@ -100,6 +101,13 @@
     "switch": "Language",
     "spanish": "Español",
     "english": "English"
+  },
+  "offline": {
+    "mode": "Offline mode",
+    "cachedData": "Cached data",
+    "pending": "Pending",
+    "syncing": "Syncing pending readings...",
+    "savedOffline": "Saved offline: {{value}} mg/dL"
   },
   "ai": {
     "systemPromptChat": "You are a helpful assistant. Answer in English.",
