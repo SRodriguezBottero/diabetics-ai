@@ -1,17 +1,17 @@
 import { useState } from 'react';
 import jsPDF from 'jspdf';
 
-async function fetchReadings(userId: string) {
-  const res = await fetch(`/api/readings?userId=${userId}`);
+async function fetchReadings() {
+  const res = await fetch('/api/readings');
   return res.ok ? await res.json() : [];
 }
 
-async function fetchInsight(userId: string) {
-  const res = await fetch(`/api/insights?userId=${userId}`);
+async function fetchInsight() {
+  const res = await fetch('/api/insights');
   return res.ok ? (await res.json()).insight : '';
 }
 
-export default function ShareWithDoctor({ userId }: { userId: string }) {
+export default function ShareWithDoctor() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -20,8 +20,8 @@ export default function ShareWithDoctor({ userId }: { userId: string }) {
     setError(null);
     try {
       const [readings, insight] = await Promise.all([
-        fetchReadings(userId),
-        fetchInsight(userId),
+        fetchReadings(),
+        fetchInsight(),
       ]);
       const doc = new jsPDF();
       doc.setFontSize(18);
@@ -53,7 +53,7 @@ export default function ShareWithDoctor({ userId }: { userId: string }) {
         }
       });
       doc.save('reporte-glucosa.pdf');
-    } catch (e) {
+    } catch {
       setError('No se pudo generar el PDF.');
     } finally {
       setLoading(false);

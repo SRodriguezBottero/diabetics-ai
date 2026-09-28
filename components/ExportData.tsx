@@ -6,7 +6,7 @@ function toCSV(rows: { value: number; timestamp: string }[]): string {
   return `${header}\n${body}`;
 }
 
-export default function ExportData({ userId }: { userId: string }) {
+export default function ExportData() {
   const [downloading, setDownloading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -14,7 +14,7 @@ export default function ExportData({ userId }: { userId: string }) {
     setDownloading(true);
     setError(null);
     try {
-      const res = await fetch(`/api/readings?userId=${userId}`);
+      const res = await fetch('/api/readings');
       if (!res.ok) throw new Error('No se pudo obtener los datos');
       const data: { value: number; timestamp: string }[] = await res.json();
       if (!data.length) throw new Error('No hay datos para exportar');

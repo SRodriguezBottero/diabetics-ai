@@ -36,17 +36,20 @@ function detectAnomalies(readings: Reading[]) {
   return readings.map(r => r.value < 70 || r.value > 180);
 }
 
-export default function HistoryChart({ userId }: { userId: string }) {
+export default function HistoryChart() {
   const [data, setData] = useState<ChartData | null>(null);
   const [loading, setLoading] = useState(true);
   const [anomalies, setAnomalies] = useState<boolean[]>([]);
 
   useEffect(() => {
-    if (!userId) return;
     setLoading(true);
-    fetch(`/api/readings?userId=${userId}`)
+    fetch('/api/readings')
       .then(r => r.json())
       .then((readings: Reading[]) => {
+        if (!Array.isArray(readings)) {
+          setLoading(false);
+          return;
+        }
         const anomalyArr = detectAnomalies(readings);
         setAnomalies(anomalyArr);
         setData({
@@ -69,7 +72,7 @@ export default function HistoryChart({ userId }: { userId: string }) {
         });
         setLoading(false);
       });
-  }, [userId]);
+  }, []);
 
   if (loading) return <div className="text-center text-gray-500">Cargando gráfico...</div>;
   if (!data || !data.labels.length) return <div className="text-center text-gray-500">Aún no hay datos suficientes para mostrar el gráfico.</div>;
