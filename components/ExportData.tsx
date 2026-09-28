@@ -1,36 +1,38 @@
 import { useState } from 'react';
-
-function toCSV(rows: { value: number; timestamp: string }[]): string {
-  const header = 'Fecha,Glucosa (mg/dL)';
-  const body = rows.map(r => `${r.timestamp},${r.value}`).join('\n');
-  return `${header}\n${body}`;
-}
+import { useTranslation } from 'react-i18next';
 
 export default function ExportData() {
+  const { t } = useTranslation('common');
   const [downloading, setDownloading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const toCSV = (rows: { value: number; timestamp: string }[]): string => {
+    const header = t('export.csvHeader');
+    const body = rows.map(r => `${r.timestamp},${r.value}`).join('\n');
+    return `${header}\n${body}`;
+  };
 
   const handleExport = async () => {
     setDownloading(true);
     setError(null);
     try {
       const res = await fetch('/api/readings');
-      if (!res.ok) throw new Error('No se pudo obtener los datos');
+      if (!res.ok) throw new Error(t('export.fetchError'));
       const data: { value: number; timestamp: string }[] = await res.json();
-      if (!data.length) throw new Error('No hay datos para exportar');
+      if (!data.length) throw new Error(t('export.noData'));
       const csv = toCSV(data);
       const blob = new Blob([csv], { type: 'text/csv' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'glucosa.csv';
+      a.download = 'glucose.csv';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
     } catch (e: unknown) {
       if (e instanceof Error) setError(e.message);
-      else setError('Error desconocido');
+      else setError(t('export.unknownError'));
     } finally {
       setDownloading(false);
     }
@@ -43,7 +45,7 @@ export default function ExportData() {
         onClick={handleExport}
         disabled={downloading}
       >
-        {downloading ? 'Exportando...' : 'Exportar datos (CSV)'}
+        {downloading ? t('export.exporting') : t('export.button')}
       </button>
       {error && <span className="text-red-500 text-sm">{error}</span>}
     </section>

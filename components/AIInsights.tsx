@@ -1,7 +1,11 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useTranslation } from 'react-i18next';
+import { useRouter } from 'next/router';
 
 export default function AIInsights() {
+  const { t } = useTranslation('common');
+  const { locale } = useRouter();
   const [insight, setInsight] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -10,7 +14,7 @@ export default function AIInsights() {
   useEffect(() => {
     setLoading(true);
     setError(null);
-    fetch('/api/insights')
+    fetch(`/api/insights?locale=${locale}`)
       .then(r => r.json())
       .then(data => {
         if (data.limitReached) {
@@ -22,16 +26,16 @@ export default function AIInsights() {
         setLoading(false);
       })
       .catch(() => {
-        setError('No se pudo obtener el análisis de la IA.');
+        setError(t('insights.error'));
         setLoading(false);
       });
-  }, []);
+  }, [locale, t]);
 
   return (
     <section className="bg-emerald-50 shadow-md rounded-lg p-6">
-      <h2 className="text-lg font-semibold mb-2">🔎 AI Insights</h2>
+      <h2 className="text-lg font-semibold mb-2">{t('insights.title')}</h2>
       {loading ? (
-        <p className="text-gray-500">Analizando tus datos...</p>
+        <p className="text-gray-500">{t('insights.analyzing')}</p>
       ) : error ? (
         <p className="text-red-500">{error}</p>
       ) : limitReached ? (

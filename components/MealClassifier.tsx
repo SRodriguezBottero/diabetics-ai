@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
+import { useTranslation } from 'react-i18next'
+import { useRouter } from 'next/router'
 
 type MealResult =
   | {
@@ -13,9 +15,11 @@ type MealResult =
       limitReached?: boolean
       message?: string
     }
-  | { label: 'desconocido' }
+  | { label: 'desconocido' | 'unknown' }
 
 export default function MealClassifier() {
+  const { t } = useTranslation('common')
+  const { locale } = useRouter()
   const [result, setResult] = useState<MealResult | null>(null)
   const [loading, setLoading] = useState(false)
   const [limitReached, setLimitReached] = useState(false)
@@ -31,6 +35,7 @@ export default function MealClassifier() {
 
     const formData = new FormData()
     formData.append('image', file)
+    formData.append('locale', locale || 'es')
 
     try {
       const res = await fetch('/api/classify_meal', { method: 'POST', body: formData })
@@ -45,39 +50,34 @@ export default function MealClassifier() {
       
       setResult(data)
 
-      /* ─── Generar sugerencia amigable si el backend no envía una ─── */
-      if (data.label !== 'desconocido' && !data.suggestion) {
+      const unknownLabels = ['desconocido', 'unknown']
+      if (!unknownLabels.includes(data.label) && !data.suggestion) {
         const highFat = data.fat && data.fat > 20
         const highCarb = data.carbs && data.carbs > 60
 
         data.suggestion = (() => {
           if (highCarb) {
-            return (
-              'Este plato es alto en carbohidratos. ' +
-              'Ejemplos para equilibrarlo: añade 1 pechuga de pollo a la plancha ' +
-              'o un puñado de garbanzos y una ensalada verde (fibra) para evitar picos de glucosa.'
-            )
+            return t('mealClassifier.suggestionHighCarb')
           }
           if (highFat) {
-            return (
-              'Tiene bastante grasa. ' +
-              'Prueba acompañarlo con vegetales al vapor o una ensalada de hojas frescas para aligerarlo.'
-            )
+            return t('mealClassifier.suggestionHighFat')
           }
-          return 'Porción equilibrada. Puedes acompañarla con agua o una infusión sin azúcar. ¡Buen provecho!'
+          return t('mealClassifier.suggestionBalanced')
         })()
       }
     } catch (err) {
       console.error(err)
-      setResult({ label: 'desconocido' })
+      setResult({ label: locale === 'en' ? 'unknown' : 'desconocido' })
     } finally {
       setLoading(false)
     }
   }
 
+  const isUnknown = result && ['desconocido', 'unknown'].includes(result.label)
+
   return (
     <div className="my-6 p-4 bg-white rounded-lg shadow-md">
-      <h2 className="font-bold mb-3">Reconocimiento de comida</h2>
+      <h2 className="font-bold mb-3">{t('mealClassifier.title')}</h2>
 
       <input
         className="file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-emerald-600 file:text-white hover:file:bg-emerald-700"
@@ -87,7 +87,7 @@ export default function MealClassifier() {
         onChange={handleFileChange}
       />
 
-      {loading && <p className="mt-4 text-sm text-gray-500">Analizando imagen…</p>}
+      {loading && <p className="mt-4 text-sm text-gray-500">{t('mealClassifier.analyzing')}</p>}
 
       {!loading && limitReached && (
         <div className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-lg">
@@ -103,42 +103,40 @@ export default function MealClassifier() {
 
       {!loading && !limitReached && result && (
         <div className="mt-4 text-sm">
-          {result.label !== 'desconocido' ? (
+          {!isUnknown ? (
             <div className="space-y-1">
               <p>
-                Esta porción parece <b>{result.label}</b>
+                {t('mealClassifier.portionLooksLike')} <b>{result.label}</b>
                 {('confidence' in result && result.confidence) && <> ({result.confidence})</>}
               </p>
 
-              {/* Tabla de macronutrientes */}
               <table className="text-xs">
                 <tbody>
                   <tr>
-                    <td className="pr-2">Carbs:</td>
+                    <td className="pr-2">{t('mealClassifier.carbs')}</td>
                     <td>{('carbs' in result ? result.carbs : '—')} g</td>
                   </tr>
                   <tr>
-                    <td className="pr-2">Proteína:</td>
+                    <td className="pr-2">{t('mealClassifier.protein')}</td>
                     <td>{('protein' in result ? result.protein : '—')} g</td>
                   </tr>
                   <tr>
-                    <td className="pr-2">Grasa:</td>
+                    <td className="pr-2">{t('mealClassifier.fat')}</td>
                     <td>{('fat' in result ? result.fat : '—')} g</td>
                   </tr>
                   <tr>
-                    <td className="pr-2">Fibra:</td>
+                    <td className="pr-2">{t('mealClassifier.fiber')}</td>
                     <td>{('fiber' in result ? result.fiber : '—')} g</td>
                   </tr>
                 </tbody>
               </table>
 
-              {/* Sugerencia nutricional */}
               {'suggestion' in result && result.suggestion && (
                 <p className="mt-1 italic text-emerald-700">{result.suggestion}</p>
               )}
             </div>
           ) : (
-            <p>No pude reconocer la comida 🙁</p>
+            <p>{t('mealClassifier.unknown')}</p>
           )}
         </div>
       )}

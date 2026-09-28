@@ -12,6 +12,7 @@ import {
   ScriptableContext,
 } from 'chart.js';
 import 'chartjs-adapter-date-fns';
+import { useTranslation } from 'react-i18next';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Legend, TimeScale);
 
@@ -32,11 +33,11 @@ type ChartData = {
 };
 
 function detectAnomalies(readings: Reading[]) {
-  // Anomaly: <70 (low) or >180 (high)
   return readings.map(r => r.value < 70 || r.value > 180);
 }
 
 export default function HistoryChart() {
+  const { t } = useTranslation('common');
   const [data, setData] = useState<ChartData | null>(null);
   const [loading, setLoading] = useState(true);
   const [anomalies, setAnomalies] = useState<boolean[]>([]);
@@ -56,7 +57,7 @@ export default function HistoryChart() {
           labels: readings.map((r) => r.timestamp),
           datasets: [
             {
-              label: 'Glucosa (mg/dL)',
+              label: t('history.glucoseLabel'),
               data: readings.map((r) => r.value),
               fill: false,
               borderColor: '#6366f1',
@@ -72,14 +73,14 @@ export default function HistoryChart() {
         });
         setLoading(false);
       });
-  }, []);
+  }, [t]);
 
-  if (loading) return <div className="text-center text-gray-500">Cargando gráfico...</div>;
-  if (!data || !data.labels.length) return <div className="text-center text-gray-500">Aún no hay datos suficientes para mostrar el gráfico.</div>;
+  if (loading) return <div className="text-center text-gray-500">{t('history.loading')}</div>;
+  if (!data || !data.labels.length) return <div className="text-center text-gray-500">{t('history.noData')}</div>;
 
   return (
     <section className="bg-white shadow-md rounded-lg p-6">
-      <h2 className="text-lg font-semibold mb-4">Histórico de glucosa</h2>
+      <h2 className="text-lg font-semibold mb-4">{t('history.title')}</h2>
       <Line
         data={data}
         options={{
@@ -91,7 +92,7 @@ export default function HistoryChart() {
           scales: {
             x: {
               type: 'category',
-              title: { display: true, text: 'Fecha' },
+              title: { display: true, text: t('history.dateAxis') },
             },
             y: {
               title: { display: true, text: 'mg/dL' },
@@ -100,10 +101,9 @@ export default function HistoryChart() {
           },
         }}
       />
-      {/* Alert for anomalies */}
       {anomalies.some(Boolean) && (
         <div className="mt-4 p-4 bg-red-100 border border-red-300 text-red-700 rounded">
-          <strong>¡Alerta!</strong> Se detectaron valores inusuales (&lt;70 o &gt;180 mg/dL) en tus mediciones recientes. Consulta a tu médico si no esperabas estos resultados.
+          <strong>{t('history.alert')}</strong> {t('history.alertMessage')}
         </div>
       )}
     </section>

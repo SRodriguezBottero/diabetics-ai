@@ -11,6 +11,15 @@ export const config = { api: { bodyParser: false } }
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
 
+const prompts = {
+  es: 'Identifica la comida de esta foto y devuélveme un JSON con:\n' +
+      '{ "label": <nombre plato en español>, "carbs": <gramos de carbohidratos estimados como número> }. ' +
+      'Si no estás seguro, usa label:"desconocido" y carbs:null',
+  en: 'Identify the food in this photo and return a JSON with:\n' +
+      '{ "label": <dish name in English>, "carbs": <estimated carbohydrate grams as number> }. ' +
+      'If you\'re not sure, use label:"unknown" and carbs:null',
+}
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') return res.status(405).end()
 
@@ -31,22 +40,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     })
   }
 
-  /* 1️⃣  Parsear la imagen */
   const form = formidable({ multiples: false })
-  form.parse(req, async (err, _fields, files) => {
+  form.parse(req, async (err, fields, files) => {
     if (err) return res.status(500).json({ error: 'parse-error' })
     const file = Array.isArray(files.image) ? files.image[0] : files.image
     if (!file) return res.status(400).json({ error: 'missing-image' })
 
-    /* 2️⃣  Leer y convertir a Base64 (data URL) */
+    const locale = (Array.isArray(fields.locale) ? fields.locale[0] : fields.locale) as 'es' | 'en' || 'es'
+    const prompt = prompts[locale] || prompts.es
+
     const buffer = await fs.readFile(file.filepath)
     const b64 = buffer.toString('base64')
     const dataUrl = `data:image/jpeg;base64,${b64}`
 
-    /* 3️⃣  Llamar a GPT-4o con visión + salida JSON */
     try {
       const completion = await openai.chat.completions.create({
-        model: 'gpt-4o-mini',            // o gpt-4o
+        model: 'gpt-4o-mini',
         response_format: { type: 'json_object' },
         messages: [
           {
@@ -54,10 +63,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             content: [
               {
                 type: 'text',
-                text:
-                  'Identifica la comida de esta foto y devuélveme un JSON con:\n' +
-                  '{ "label": <nombre plato en español>, "carbs": <gramos de carbohidratos estimados como número> }. ' +
-                  'Si no estás seguro, usa label:"desconocido" y carbs:null',
+                text: prompt,
               },
               {
                 type: 'image_url',
@@ -73,7 +79,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       // Increment usage after successful API call
       await incrementUsage(userId, 'meals')
       
-      // json = { label: "pasta", carbs: 60 }
       return res.status(200).json({
         ...json,
         remaining: usageCheck.remaining - 1,

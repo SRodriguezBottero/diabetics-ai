@@ -1,32 +1,34 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useRouter } from 'next/router'
 import VoiceButton from './VoiceButton'
 
 type Msg = { role: 'user' | 'assistant'; content: string }
 
 export default function ChatInterface() {
+  const { t } = useTranslation('common')
+  const { locale } = useRouter()
   const [msgs, setMsgs] = useState<Msg[]>([
-    { role: 'assistant', content: '¡Hola! ¿En qué puedo ayudarte hoy? Si tienes preguntas sobre tu salud o los datos de glucosa que compartiste, no dudes en decírmelo.' }
+    { role: 'assistant', content: t('chat.greeting') }
   ])
   const [input, setInput] = useState('')
   const [toast, setToast] = useState<string | null>(null)
 
-  /* ───────── helpers ───────── */
-
   const fmt = (ts: string) =>
-    new Date(ts).toLocaleString('es-ES', { dateStyle: 'short', timeStyle: 'short' })
+    new Date(ts).toLocaleString(locale === 'en' ? 'en-US' : 'es-ES', { dateStyle: 'short', timeStyle: 'short' })
 
   const getLastReading = async () => {
     const r = await fetch('/api/readings/last')
-    if (!r.ok) return 'Aún no tienes lecturas registradas.'
+    if (!r.ok) return t('readings.noReadings')
     const { value, timestamp } = await r.json()
-    return `Tu último control fue ${value} mg/dL el ${fmt(timestamp)}.`
+    return t('readings.lastReading', { value, date: fmt(timestamp) })
   }
 
   const getAllReadings = async () => {
     const r = await fetch('/api/readings')
-    if (!r.ok) return 'No pude recuperar tu historial.'
+    if (!r.ok) return t('readings.couldNotRetrieve')
     const arr: { value: number; timestamp: string }[] = await r.json()
-    if (!arr.length) return 'Aún no tienes lecturas registradas.'
+    if (!arr.length) return t('readings.noReadings')
     return arr
       .map(o => `${fmt(o.timestamp)} → ${o.value} mg/dL`)
       .join('\n')
@@ -36,7 +38,7 @@ export default function ChatInterface() {
     const res = await fetch('/api/tts', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text })
+      body: JSON.stringify({ text, locale })
     })
     const blob = await res.blob()
     new Audio(URL.createObjectURL(blob)).play()
@@ -48,10 +50,11 @@ export default function ChatInterface() {
       .replace(/[\u0300-\u036f]/g, '')
       .toLowerCase()
 
-  // Voice-driven logging: detect phrases like 'registrar glucosa 120' or 'anota 110'
   const tryVoiceLog = async (content: string) => {
-    const logPattern = /(?:registrar|anota|agrega|guarda|pon|log(?:uea)?)(?:\s+(?:mi|una|la|el))?\s*(?:glucosa|glicemia|lectura|valor)?\s*(\d{2,3})/i
-    const match = content.match(logPattern)
+    const esPattern = /(?:registrar|anota|agrega|guarda|pon|log(?:uea)?)(?:\s+(?:mi|una|la|el))?\s*(?:glucosa|glicemia|lectura|valor)?\s*(\d{2,3})/i
+    const enPattern = /(?:log|record|add|save|register)(?:\s+(?:my|a|the))?\s*(?:glucose|blood\s*sugar|reading|value)?\s*(\d{2,3})/i
+    
+    const match = content.match(locale === 'en' ? enPattern : esPattern)
     if (match && match[1]) {
       const value = parseInt(match[1], 10)
       if (!isNaN(value)) {
@@ -60,9 +63,9 @@ export default function ChatInterface() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ value }),
         })
-        const reply = `Registrado: ${value} mg/dL.`
+        const reply = t('readings.registered', { value })
         setMsgs(m => [...m, { role: 'user', content }, { role: 'assistant', content: reply }])
-        setToast(`Registrado: ${value} mg/dL`)
+        setToast(reply)
         setTimeout(() => setToast(null), 3000)
         await playTTS(reply)
         return true
@@ -71,45 +74,41 @@ export default function ChatInterface() {
     return false
   }
 
-  /* ───────── envío ───────── */
-
   const send = async (content: string) => {
     if (!content.trim()) return
 
-    // Construir el historial actualizado manualmente
     const updatedMsgs = [...msgs, { role: 'user' as const, content }] as Msg[]
     setMsgs(updatedMsgs)
     setInput('')
 
-    // 1. Voice-driven logging
     if (await tryVoiceLog(content)) return
 
     const norm = normalize(content)
-    console.log('Frase normalizada:', norm)
 
-    /* 2. Último control / medición */
-    if (/(ultimo|ultima).*?(glic|gluc|medic|valor|result)/.test(norm)) {
+    const esLastPattern = /(ultimo|ultima).*?(glic|gluc|medic|valor|result)/
+    const enLastPattern = /(last|latest|recent).*?(glic|gluc|read|value|result)/
+    
+    if ((locale === 'en' ? enLastPattern : esLastPattern).test(norm)) {
       const reply = await getLastReading()
       setMsgs(h => [...h, { role: 'assistant', content: reply }])
       await playTTS(reply)
       return
     }
 
-    /* 3. Historial completo */
-    if (
-      /historial|todas? mis lecturas|todos? mis registros|muestrame mis datos/.test(norm)
-    ) {
+    const esHistoryPattern = /historial|todas? mis lecturas|todos? mis registros|muestrame mis datos/
+    const enHistoryPattern = /history|all my readings|all my records|show me my data/
+    
+    if ((locale === 'en' ? enHistoryPattern : esHistoryPattern).test(norm)) {
       const reply = await getAllReadings()
       setMsgs(h => [...h, { role: 'assistant', content: reply }])
       await playTTS(reply)
       return
     }
 
-    // 4. conversación normal → OpenAI
     const res = await fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ messages: updatedMsgs })
+      body: JSON.stringify({ messages: updatedMsgs, locale })
     })
     const data = await res.json()
     const replyContent = data.reply?.content || data.reply
@@ -124,8 +123,6 @@ export default function ChatInterface() {
       await playTTS(replyContent)
     }
   }
-
-  /* ───────── UI ───────── */
 
   return (
     <div className="space-y-4 relative">
@@ -145,17 +142,16 @@ export default function ChatInterface() {
           className="flex-1 border p-2 rounded"
           value={input}
           onChange={e => setInput(e.target.value)}
-          placeholder="¿Cómo puedo ayudarte?"
+          placeholder={t('chat.placeholder')}
         />
         <button
           className="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-2 rounded-md"
           onClick={() => send(input)}
         >
-          Enviar
+          {t('chat.send')}
         </button>
       </div>
 
-      {/* Toast/Snackbar */}
       {toast && (
         <div className="fixed left-1/2 bottom-8 transform -translate-x-1/2 bg-emerald-600 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-fade-in">
           {toast}
