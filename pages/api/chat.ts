@@ -7,16 +7,34 @@ import prisma from '../../lib/prisma'
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
 
+const translations = {
+  es: {
+    notAuthenticated: 'No autenticado',
+    glucoseContext: (data: string) => 
+      `Estos son los últimos valores de glucosa del usuario:\n${data}\nPuedes usar estos datos para responder preguntas sobre su salud.`,
+    systemPrompt: 'You are a helpful assistant. Answer in Spanish.',
+  },
+  en: {
+    notAuthenticated: 'Not authenticated',
+    glucoseContext: (data: string) => 
+      `These are the user's latest glucose values:\n${data}\nYou can use this data to answer questions about their health.`,
+    systemPrompt: 'You are a helpful assistant. Answer in English.',
+  },
+}
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') return res.status(405).end()
 
   const session = await getServerSession(req, res, authOptions)
   
   if (!session?.user?.id) {
-    return res.status(401).json({ error: 'No autenticado' })
+    const locale = (req.body?.locale as 'es' | 'en') || 'es'
+    return res.status(401).json({ error: translations[locale].notAuthenticated })
   }
 
   const userId = session.user.id
+  const locale = (req.body?.locale as 'es' | 'en') || 'es'
+  const t = translations[locale] || translations.es
 
   const { messages } = req.body as {
     messages?: { role: 'user' | 'assistant' | 'system'; content: string }[]
@@ -30,10 +48,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   })
   if (readings.length) {
     const data = readings.map(r => `${r.timestamp}: ${r.value} mg/dL`).join('\n')
-    systemContext = `Estos son los últimos valores de glucosa del usuario:\n${data}\nPuedes usar estos datos para responder preguntas sobre su salud.`
+    systemContext = t.glucoseContext(data)
   }
 
-  // 2) Si viene vacío o undefined, creamos uno de sistema
   const safeMessages =
     messages && messages.length
       ? [
@@ -45,12 +62,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       : [
           {
             role: 'system' as const,
-            content: 'You are a helpful assistant. Answer in Spanish.',
+            content: t.systemPrompt,
           },
         ]
 
   try {
-    // 3) Llamamos a OpenAI con el array ya seguro
     const completion = await openai.chat.completions.create({
       model: 'gpt-4o-mini',
       messages: safeMessages,

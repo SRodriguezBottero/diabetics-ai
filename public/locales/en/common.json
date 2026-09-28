@@ -1,0 +1,111 @@
+{
+  "app": {
+    "title": "Diabetics-AI",
+    "loading": "Loading..."
+  },
+  "auth": {
+    "signOut": "Sign out",
+    "signIn": "Sign in",
+    "register": "Register",
+    "createAccount": "Create account",
+    "email": "Email",
+    "password": "Password",
+    "nameOptional": "Name (optional)",
+    "namePlaceholder": "Your name",
+    "emailPlaceholder": "your@email.com",
+    "passwordPlaceholder": "••••••••",
+    "invalidCredentials": "Invalid email or password",
+    "registrationError": "Registration error",
+    "alreadyHaveAccount": "Already have an account?",
+    "noAccount": "Don't have an account?",
+    "notAuthenticated": "Not authenticated"
+  },
+  "readings": {
+    "addNew": "Add new reading",
+    "glucoseLevel": "Glucose level",
+    "add": "+ Add",
+    "unit": "mg/dL",
+    "registered": "Registered: {{value}} mg/dL",
+    "recent": "Recent readings",
+    "noReadings": "You don't have any readings yet.",
+    "couldNotRetrieve": "Could not retrieve your history.",
+    "lastReading": "Your last reading was {{value}} mg/dL on {{date}}."
+  },
+  "chat": {
+    "title": "Talk to me",
+    "placeholder": "How can I help you?",
+    "send": "Send",
+    "greeting": "Hello! How can I help you today? If you have questions about your health or the glucose data you've shared, feel free to ask me."
+  },
+  "insights": {
+    "title": "🔎 AI Insights",
+    "analyzing": "Analyzing your data...",
+    "error": "Could not get the AI analysis.",
+    "noData": "Not enough data to analyze yet."
+  },
+  "history": {
+    "title": "Glucose history",
+    "pageTitle": "Control history",
+    "loading": "Loading chart...",
+    "noData": "Not enough data to show the chart yet.",
+    "noDataPage": "No data yet.",
+    "dateAxis": "Date",
+    "glucoseLabel": "Glucose (mg/dL)",
+    "dataPoint": "Data {{index}}",
+    "alert": "Alert!",
+    "alertMessage": "Unusual values (<70 or >180 mg/dL) were detected in your recent readings. Consult your doctor if you did not expect these results."
+  },
+  "export": {
+    "button": "Export data (CSV)",
+    "exporting": "Exporting...",
+    "csvHeader": "Date,Glucose (mg/dL)",
+    "noData": "No data to export",
+    "fetchError": "Could not fetch the data",
+    "unknownError": "Unknown error"
+  },
+  "share": {
+    "button": "Share with Doctor",
+    "generating": "Generating PDF...",
+    "pdfError": "Could not generate the PDF.",
+    "pdfTitle": "Glucose Report - Diabetics-AI",
+    "pdfReportDate": "Report date:",
+    "pdfSummary": "AI Summary:",
+    "pdfNoSummary": "No summary available.",
+    "pdfReadings": "Recent readings:",
+    "pdfDateHeader": "Date and time"
+  },
+  "reminder": {
+    "title": "⏰ Daily reminder:",
+    "hint": "We'll notify you at this time every day.",
+    "notificationTitle": "Time to log your glucose!",
+    "notificationBody": "Don't forget to record your glucose reading in Diabetics-AI."
+  },
+  "mealClassifier": {
+    "title": "Food recognition",
+    "analyzing": "Analyzing image…",
+    "portionLooksLike": "This portion looks like",
+    "unknown": "Could not recognize the food 🙁",
+    "carbs": "Carbs:",
+    "protein": "Protein:",
+    "fat": "Fat:",
+    "fiber": "Fiber:",
+    "suggestionHighCarb": "This dish is high in carbohydrates. To balance it, try adding grilled chicken breast or a handful of chickpeas and a green salad (fiber) to avoid glucose spikes.",
+    "suggestionHighFat": "It has quite a bit of fat. Try pairing it with steamed vegetables or a fresh leaf salad to lighten it up.",
+    "suggestionBalanced": "Balanced portion. You can pair it with water or unsweetened tea. Enjoy your meal!"
+  },
+  "voice": {
+    "notAvailable": "Speech Recognition is not available"
+  },
+  "language": {
+    "switch": "Language",
+    "spanish": "Español",
+    "english": "English"
+  },
+  "ai": {
+    "systemPromptChat": "You are a helpful assistant. Answer in English.",
+    "systemPromptInsights": "You are a medical assistant expert in diabetes. Answer in English.",
+    "insightsPrompt": "You are a medical assistant for people with diabetes. Analyze the following blood glucose values and provide a brief summary in English, including trends, possible risks, and personalized advice.",
+    "glucoseContext": "These are the user's latest glucose values:\n{{data}}\nYou can use this data to answer questions about their health.",
+    "mealClassifyPrompt": "Identify the food in this photo and return a JSON with:\n{ \"label\": <dish name in English>, \"carbs\": <estimated carbohydrate grams as number> }. If you're not sure, use label:\"unknown\" and carbs:null"
+  }
+}

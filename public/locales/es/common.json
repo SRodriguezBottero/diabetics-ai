@@ -1,0 +1,111 @@
+{
+  "app": {
+    "title": "Diabetics-AI",
+    "loading": "Cargando..."
+  },
+  "auth": {
+    "signOut": "Cerrar sesión",
+    "signIn": "Iniciar sesión",
+    "register": "Registrarse",
+    "createAccount": "Crear cuenta",
+    "email": "Email",
+    "password": "Contraseña",
+    "nameOptional": "Nombre (opcional)",
+    "namePlaceholder": "Tu nombre",
+    "emailPlaceholder": "tu@email.com",
+    "passwordPlaceholder": "••••••••",
+    "invalidCredentials": "Email o contraseña incorrectos",
+    "registrationError": "Error al registrarse",
+    "alreadyHaveAccount": "¿Ya tienes cuenta?",
+    "noAccount": "¿No tienes cuenta?",
+    "notAuthenticated": "No autenticado"
+  },
+  "readings": {
+    "addNew": "Añadir nueva medición",
+    "glucoseLevel": "Nivel de glucosa",
+    "add": "+ Añadir",
+    "unit": "mg/dL",
+    "registered": "Registrado: {{value}} mg/dL",
+    "recent": "Mediciones recientes",
+    "noReadings": "Aún no tienes lecturas registradas.",
+    "couldNotRetrieve": "No pude recuperar tu historial.",
+    "lastReading": "Tu último control fue {{value}} mg/dL el {{date}}."
+  },
+  "chat": {
+    "title": "Habla conmigo",
+    "placeholder": "¿Cómo puedo ayudarte?",
+    "send": "Enviar",
+    "greeting": "¡Hola! ¿En qué puedo ayudarte hoy? Si tienes preguntas sobre tu salud o los datos de glucosa que compartiste, no dudes en decírmelo."
+  },
+  "insights": {
+    "title": "🔎 AI Insights",
+    "analyzing": "Analizando tus datos...",
+    "error": "No se pudo obtener el análisis de la IA.",
+    "noData": "Aún no hay suficientes datos para analizar."
+  },
+  "history": {
+    "title": "Histórico de glucosa",
+    "pageTitle": "Historial de controles",
+    "loading": "Cargando gráfico...",
+    "noData": "Aún no hay datos suficientes para mostrar el gráfico.",
+    "noDataPage": "Aún no hay datos.",
+    "dateAxis": "Fecha",
+    "glucoseLabel": "Glucosa (mg/dL)",
+    "dataPoint": "Dato {{index}}",
+    "alert": "¡Alerta!",
+    "alertMessage": "Se detectaron valores inusuales (<70 o >180 mg/dL) en tus mediciones recientes. Consulta a tu médico si no esperabas estos resultados."
+  },
+  "export": {
+    "button": "Exportar datos (CSV)",
+    "exporting": "Exportando...",
+    "csvHeader": "Fecha,Glucosa (mg/dL)",
+    "noData": "No hay datos para exportar",
+    "fetchError": "No se pudo obtener los datos",
+    "unknownError": "Error desconocido"
+  },
+  "share": {
+    "button": "Compartir con Doctor",
+    "generating": "Generando PDF...",
+    "pdfError": "No se pudo generar el PDF.",
+    "pdfTitle": "Reporte de Glucosa - Diabetics-AI",
+    "pdfReportDate": "Fecha de reporte:",
+    "pdfSummary": "Resumen AI:",
+    "pdfNoSummary": "Sin resumen disponible.",
+    "pdfReadings": "Últimas mediciones:",
+    "pdfDateHeader": "Fecha y hora"
+  },
+  "reminder": {
+    "title": "⏰ Recordatorio diario:",
+    "hint": "Te avisaremos a esta hora cada día.",
+    "notificationTitle": "¡Hora de registrar tu glucosa!",
+    "notificationBody": "No olvides anotar tu medición de glucosa en Diabetics-AI."
+  },
+  "mealClassifier": {
+    "title": "Reconocimiento de comida",
+    "analyzing": "Analizando imagen…",
+    "portionLooksLike": "Esta porción parece",
+    "unknown": "No pude reconocer la comida 🙁",
+    "carbs": "Carbs:",
+    "protein": "Proteína:",
+    "fat": "Grasa:",
+    "fiber": "Fibra:",
+    "suggestionHighCarb": "Este plato es alto en carbohidratos. Ejemplos para equilibrarlo: añade 1 pechuga de pollo a la plancha o un puñado de garbanzos y una ensalada verde (fibra) para evitar picos de glucosa.",
+    "suggestionHighFat": "Tiene bastante grasa. Prueba acompañarlo con vegetales al vapor o una ensalada de hojas frescas para aligerarlo.",
+    "suggestionBalanced": "Porción equilibrada. Puedes acompañarla con agua o una infusión sin azúcar. ¡Buen provecho!"
+  },
+  "voice": {
+    "notAvailable": "Speech Recognition no está disponible"
+  },
+  "language": {
+    "switch": "Idioma",
+    "spanish": "Español",
+    "english": "English"
+  },
+  "ai": {
+    "systemPromptChat": "You are a helpful assistant. Answer in Spanish.",
+    "systemPromptInsights": "Eres un asistente médico experto en diabetes. Responde en español.",
+    "insightsPrompt": "Eres un asistente médico para personas con diabetes. Analiza los siguientes valores de glucosa en sangre y proporciona un resumen breve en español, incluyendo tendencias, posibles riesgos y un consejo personalizado.",
+    "glucoseContext": "Estos son los últimos valores de glucosa del usuario:\n{{data}}\nPuedes usar estos datos para responder preguntas sobre su salud.",
+    "mealClassifyPrompt": "Identifica la comida de esta foto y devuélveme un JSON con:\n{ \"label\": <nombre plato en español>, \"carbs\": <gramos de carbohidratos estimados como número> }. Si no estás seguro, usa label:\"desconocido\" y carbs:null"
+  }
+}

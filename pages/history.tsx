@@ -8,10 +8,14 @@ import {
   PointElement,
   LineElement,
 } from 'chart.js'
+import { useTranslation } from 'react-i18next'
+import { serverSideTranslations } from 'next-i18next/pages/serverSideTranslations'
+import { GetStaticProps } from 'next'
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement)
 
 export default function History() {
+  const { t } = useTranslation('common')
   const [log, setLog] = useState<number[]>([])
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem('glycemia') || '[]')
@@ -19,17 +23,23 @@ export default function History() {
   }, [])
 
   const data = {
-    labels: log.map((_, i) => `Dato ${i+1}`),
-    datasets: [{ label: 'Glicemia (mg/dL)', data: log, fill: false, tension: 0.3 }],
+    labels: log.map((_, i) => t('history.dataPoint', { index: i + 1 })),
+    datasets: [{ label: t('history.glucoseLabel'), data: log, fill: false, tension: 0.3 }],
   }
 
   return (
     <div className="max-w-lg mx-auto p-4">
-      <h1 className="text-xl font-bold">Historial de controles</h1>
+      <h1 className="text-xl font-bold">{t('history.pageTitle')}</h1>
       {log.length
         ? <Line data={data} />
-        : <p className="mt-4">Aún no hay datos.</p>
+        : <p className="mt-4">{t('history.noDataPage')}</p>
       }
     </div>
   )
 }
+
+export const getStaticProps: GetStaticProps = async ({ locale }) => ({
+  props: {
+    ...(await serverSideTranslations(locale ?? 'es', ['common'])),
+  },
+})
