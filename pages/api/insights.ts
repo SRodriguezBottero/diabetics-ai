@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from './auth/[...nextauth]'
 import OpenAI from 'openai'
 import prisma from '../../lib/prisma'
+import { checkUsageLimit, incrementUsage, getUpgradeMessage } from '../../lib/subscription'
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
 
@@ -36,6 +37,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const userId = session.user.id
 
+  // Check usage limits
+  const usageCheck = await checkUsageLimit(userId, 'insights')
+  if (!usageCheck.allowed) {
+    return res.status(200).json({ 
+      insight: getUpgradeMessage('insights'),
+      limitReached: true,
+      remaining: usageCheck.remaining,
+    })
+  }
+
   const readings = await prisma.reading.findMany({
     where: { userId },
     orderBy: { timestamp: 'asc' },
@@ -56,8 +67,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       ],
       max_tokens: 200,
     })
+    
+    // Increment usage after successful API call
+    await incrementUsage(userId, 'insights')
+    
     const insight = completion.choices[0].message.content
-    res.status(200).json({ insight })
+    res.status(200).json({ 
+      insight,
+      remaining: usageCheck.remaining - 1,
+    })
   } catch (e) {
     console.error(e)
     res.status(500).json({ error: 'OpenAI error' })

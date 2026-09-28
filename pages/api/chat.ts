@@ -4,6 +4,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from './auth/[...nextauth]'
 import OpenAI from 'openai'
 import prisma from '../../lib/prisma'
+import { checkUsageLimit, incrementUsage, getUpgradeMessage } from '../../lib/subscription'
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
 
@@ -35,6 +36,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const userId = session.user.id
   const locale = (req.body?.locale as 'es' | 'en') || 'es'
   const t = translations[locale] || translations.es
+
+  // Check usage limits
+  const usageCheck = await checkUsageLimit(userId, 'chat')
+  if (!usageCheck.allowed) {
+    return res.status(200).json({ 
+      reply: { 
+        role: 'assistant', 
+        content: getUpgradeMessage('chat') 
+      },
+      limitReached: true,
+      remaining: usageCheck.remaining,
+    })
+  }
 
   const { messages } = req.body as {
     messages?: { role: 'user' | 'assistant' | 'system'; content: string }[]
@@ -72,7 +86,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       messages: safeMessages,
     })
 
-    res.status(200).json({ reply: completion.choices[0].message })
+    // Increment usage after successful API call
+    await incrementUsage(userId, 'chat')
+
+    res.status(200).json({ 
+      reply: completion.choices[0].message,
+      remaining: usageCheck.remaining - 1,
+    })
   } catch (e) {
     console.error(e)
     res.status(500).json({ error: 'OpenAI error' })

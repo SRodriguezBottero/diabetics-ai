@@ -11,7 +11,7 @@ import { appWithTranslation } from 'next-i18next/pages'
 import { useTranslation } from 'react-i18next'
 import { LanguageProvider } from '../contexts/LanguageContext'
 
-const publicPages = ['/login']
+const publicPages = ['/login', '/pricing']
 
 function AuthGuard({ children }: { children: React.ReactNode }) {
   const { data: session, status } = useSession()

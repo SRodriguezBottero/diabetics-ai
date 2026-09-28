@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import Link from 'next/link'
 import { useTranslation } from 'react-i18next'
 import { useRouter } from 'next/router'
 
@@ -11,6 +12,8 @@ type MealResult =
       fiber?: number | null
       confidence?: string
       suggestion?: string
+      limitReached?: boolean
+      message?: string
     }
   | { label: 'desconocido' | 'unknown' }
 
@@ -19,6 +22,8 @@ export default function MealClassifier() {
   const { locale } = useRouter()
   const [result, setResult] = useState<MealResult | null>(null)
   const [loading, setLoading] = useState(false)
+  const [limitReached, setLimitReached] = useState(false)
+  const [limitMessage, setLimitMessage] = useState('')
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files?.length) return
@@ -26,6 +31,7 @@ export default function MealClassifier() {
 
     setLoading(true)
     setResult(null)
+    setLimitReached(false)
 
     const formData = new FormData()
     formData.append('image', file)
@@ -34,6 +40,14 @@ export default function MealClassifier() {
     try {
       const res = await fetch('/api/classify_meal', { method: 'POST', body: formData })
       const data = await res.json()
+      
+      if (data.limitReached) {
+        setLimitReached(true)
+        setLimitMessage(data.message || 'Has alcanzado tu límite mensual')
+        setLoading(false)
+        return
+      }
+      
       setResult(data)
 
       const unknownLabels = ['desconocido', 'unknown']
@@ -75,7 +89,19 @@ export default function MealClassifier() {
 
       {loading && <p className="mt-4 text-sm text-gray-500">{t('mealClassifier.analyzing')}</p>}
 
-      {!loading && result && (
+      {!loading && limitReached && (
+        <div className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+          <p className="text-amber-800 text-sm">{limitMessage}</p>
+          <Link
+            href="/pricing"
+            className="inline-block mt-2 text-sm font-medium text-emerald-600 hover:text-emerald-800"
+          >
+            Actualizar a Premium →
+          </Link>
+        </div>
+      )}
+
+      {!loading && !limitReached && result && (
         <div className="mt-4 text-sm">
           {!isUnknown ? (
             <div className="space-y-1">

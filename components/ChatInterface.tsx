@@ -110,9 +110,18 @@ export default function ChatInterface() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ messages: updatedMsgs, locale })
     })
-    const { reply } = await res.json()
-    setMsgs(m => [...m, { role: 'assistant', content: reply.content }])
-    await playTTS(reply.content)
+    const data = await res.json()
+    const replyContent = data.reply?.content || data.reply
+    
+    if (data.limitReached) {
+      setMsgs(m => [...m, { 
+        role: 'assistant', 
+        content: `${replyContent}\n\n[Actualiza a Premium para mensajes ilimitados →](/pricing)` 
+      }])
+    } else {
+      setMsgs(m => [...m, { role: 'assistant', content: replyContent }])
+      await playTTS(replyContent)
+    }
   }
 
   return (
