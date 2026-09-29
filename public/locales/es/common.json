@@ -76,10 +76,16 @@
     "pdfDateHeader": "Fecha y hora"
   },
   "reminder": {
-    "title": "⏰ Recordatorio diario:",
-    "hint": "Te avisaremos a esta hora cada día.",
+    "title": "⏰ Recordatorio diario",
+    "hint": "Activa las notificaciones para recibir un recordatorio diario.",
+    "activeHint": "Te avisaremos a esta hora cada día.",
     "notificationTitle": "¡Hora de registrar tu glucosa!",
-    "notificationBody": "No olvides anotar tu medición de glucosa en Diabetics-AI."
+    "notificationBody": "No olvides anotar tu medición de glucosa en Diabetics-AI.",
+    "permissionDenied": "Has bloqueado las notificaciones. Actívalas en la configuración de tu navegador.",
+    "permissionFailed": "No se pudo activar las notificaciones. Intenta de nuevo.",
+    "permissionError": "Error al solicitar permisos de notificación.",
+    "saveError": "Error al guardar la configuración.",
+    "enableInBrowser": "Activa las notificaciones en la configuración de tu navegador para usar esta función."
   },
   "mealClassifier": {
     "title": "Reconocimiento de comida",

@@ -13,6 +13,7 @@ import MealClassifier from '../components/MealClassifier'
 import PlanIndicator from '../components/PlanIndicator'
 import UsageMeter from '../components/UsageMeter'
 import LanguageSwitcher from '../components/LanguageSwitcher'
+import Reminder from '../components/Reminder'
 
 interface ToastMessage {
   text: string
@@ -119,6 +120,7 @@ export default function Home() {
         </header>
 
         <UsageMeter />
+        <Reminder />
 
         <section className="bg-white shadow-md rounded-lg p-4 sm:p-6 space-y-4 sm:space-y-6">
           <div>
