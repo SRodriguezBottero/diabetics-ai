@@ -12,14 +12,14 @@ const translations = {
   es: {
     notAuthenticated: 'No autenticado',
     glucoseContext: (data: string) => 
-      `Estos son los últimos valores de glucosa del usuario:\n${data}\nPuedes usar estos datos para responder preguntas sobre su salud.`,
-    systemPrompt: 'You are a helpful assistant. Answer in Spanish.',
+      `Estos son los últimos valores de glucosa del usuario:\n${data}\nPodés usar estos datos para ayudarle a entender patrones y preparar información para compartir con su médico. No hagas diagnósticos ni des consejos médicos específicos.`,
+    systemPrompt: 'Sos un compañero de registro de glucosa. Ayudás a los usuarios a entender patrones en sus datos para que puedan compartirlos con su médico. Respondé en español. No sos médico ni das diagnósticos.',
   },
   en: {
     notAuthenticated: 'Not authenticated',
     glucoseContext: (data: string) => 
-      `These are the user's latest glucose values:\n${data}\nYou can use this data to answer questions about their health.`,
-    systemPrompt: 'You are a helpful assistant. Answer in English.',
+      `These are the user's latest glucose values:\n${data}\nYou can use this data to help them understand patterns and prepare information to share with their doctor. Do not diagnose or give specific medical advice.`,
+    systemPrompt: 'You are a glucose logging companion. You help users understand patterns in their data so they can share it with their doctor. Answer in English. You are not a doctor and do not diagnose.',
   },
 }
 

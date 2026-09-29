@@ -11,16 +11,16 @@ const translations = {
   es: {
     notAuthenticated: 'No autenticado',
     noData: 'Aún no hay suficientes datos para analizar.',
-    systemPrompt: 'Eres un asistente médico experto en diabetes. Responde en español.',
+    systemPrompt: 'Sos un compañero de registro de glucosa. Ayudás a los usuarios a entender patrones en sus datos para que puedan compartirlos con su médico. Respondé en español. No sos médico ni das diagnósticos — solo observaciones sobre los datos.',
     userPrompt: (data: string) => 
-      `Eres un asistente médico para personas con diabetes. Analiza los siguientes valores de glucosa en sangre y proporciona un resumen breve en español, incluyendo tendencias, posibles riesgos y un consejo personalizado.\n\n${data}`,
+      `Analizá los siguientes valores de glucosa en sangre y proporcioná un resumen breve en español, incluyendo tendencias observadas y patrones que el usuario podría querer discutir con su médico. No hagas diagnósticos ni des consejos médicos específicos — solo observaciones sobre los datos.\n\n${data}`,
   },
   en: {
     notAuthenticated: 'Not authenticated',
     noData: 'Not enough data to analyze yet.',
-    systemPrompt: 'You are a medical assistant expert in diabetes. Answer in English.',
+    systemPrompt: 'You are a glucose logging companion. You help users understand patterns in their data so they can share it with their doctor. Answer in English. You are not a doctor and do not diagnose — only observations about data.',
     userPrompt: (data: string) => 
-      `You are a medical assistant for people with diabetes. Analyze the following blood glucose values and provide a brief summary in English, including trends, possible risks, and personalized advice.\n\n${data}`,
+      `Analyze the following blood glucose values and provide a brief summary in English, including observed trends and patterns the user might want to discuss with their doctor. Do not diagnose or give specific medical advice — only observations about the data.\n\n${data}`,
   },
 }
 

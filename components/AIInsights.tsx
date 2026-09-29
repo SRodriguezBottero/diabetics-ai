@@ -34,6 +34,9 @@ export default function AIInsights() {
   return (
     <section className="bg-emerald-50 shadow-md rounded-lg p-6">
       <h2 className="text-lg font-semibold mb-2">{t('insights.title')}</h2>
+      <div className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded px-3 py-2 mb-3">
+        ⚠️ {t('ai.disclaimer')}
+      </div>
       {loading ? (
         <p className="text-gray-500">{t('insights.analyzing')}</p>
       ) : error ? (
