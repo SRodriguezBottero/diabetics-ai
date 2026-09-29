@@ -2,10 +2,12 @@
 
 <!-- MARKETING: headline -->
 > **Registrá tu glucosa. Entendé patrones. Compartí con tu médico.**
+>
+> Diabetics-AI es tu compañero de registro: historial, insights con IA y reportes listos para la consulta. No reemplaza consejo médico.
 <!-- /MARKETING: headline -->
 
 <!-- MARKETING: one-pager -->
-Diabetics-AI es tu compañero de registro de glucosa con inteligencia artificial. Llevá un registro simple de tus mediciones, visualizá tendencias con gráficos claros, y prepará informes para compartir con tu médico. La IA te ayuda a entender patrones en tus datos — sin reemplazar el consejo médico profesional.
+Diabetics-AI ayuda a personas con diabetes a registrar glucosa, ver tendencias y preparar la consulta. Free = log + chart. Pro = chat, insights y meals con IA. Hecho para uso diario, con disclaimer claro: apoyo al registro, no diagnóstico.
 <!-- /MARKETING: one-pager -->
 
 ## Free vs Premium
@@ -22,7 +24,9 @@ Diabetics-AI es tu compañero de registro de glucosa con inteligencia artificial
 | Soporte prioritario | ❌ | ✅ |
 
 <!-- MARKETING: paywall -->
-**Premium desbloquea:** Chat ilimitado con IA para explorar tus datos, análisis de patrones sin restricciones, y clasificación de comidas para entender mejor tu alimentación. Todo por $9.99/mes.
+El plan gratuito cubre registro y gráficos. Pro desbloquea chat con IA, insights automáticos y clasificador de comidas — USD 9.99/mes.
+
+**[Probar Pro →](/pricing)**
 <!-- /MARKETING: paywall -->
 
 ## Features
