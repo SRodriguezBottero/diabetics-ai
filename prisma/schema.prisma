@@ -31,6 +31,12 @@ model User {
   insightsUsed         Int       @default(0)
   mealsClassifiedUsed  Int       @default(0)
   usageResetDate       DateTime  @default(now())
+
+  // Push notification fields
+  fcmToken             String?
+  reminderTime         String?   // Format: "HH:MM" (24-hour)
+  reminderEnabled      Boolean   @default(false)
+  timezone             String?   @default("America/New_York")
 }
 
 model Reading {

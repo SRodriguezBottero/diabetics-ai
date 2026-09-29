@@ -76,10 +76,16 @@
     "pdfDateHeader": "Date and time"
   },
   "reminder": {
-    "title": "⏰ Daily reminder:",
-    "hint": "We'll notify you at this time every day.",
+    "title": "⏰ Daily reminder",
+    "hint": "Enable notifications to receive a daily reminder.",
+    "activeHint": "We'll notify you at this time every day.",
     "notificationTitle": "Time to log your glucose!",
-    "notificationBody": "Don't forget to record your glucose reading in Diabetics-AI."
+    "notificationBody": "Don't forget to record your glucose reading in Diabetics-AI.",
+    "permissionDenied": "You have blocked notifications. Enable them in your browser settings.",
+    "permissionFailed": "Could not enable notifications. Please try again.",
+    "permissionError": "Error requesting notification permissions.",
+    "saveError": "Error saving settings.",
+    "enableInBrowser": "Enable notifications in your browser settings to use this feature."
   },
   "mealClassifier": {
     "title": "Food recognition",
