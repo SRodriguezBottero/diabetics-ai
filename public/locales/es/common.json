@@ -110,10 +110,11 @@
     "savedOffline": "Guardado offline: {{value}} mg/dL"
   },
   "ai": {
-    "systemPromptChat": "You are a helpful assistant. Answer in Spanish.",
-    "systemPromptInsights": "Eres un asistente médico experto en diabetes. Responde en español.",
-    "insightsPrompt": "Eres un asistente médico para personas con diabetes. Analiza los siguientes valores de glucosa en sangre y proporciona un resumen breve en español, incluyendo tendencias, posibles riesgos y un consejo personalizado.",
-    "glucoseContext": "Estos son los últimos valores de glucosa del usuario:\n{{data}}\nPuedes usar estos datos para responder preguntas sobre su salud.",
-    "mealClassifyPrompt": "Identifica la comida de esta foto y devuélveme un JSON con:\n{ \"label\": <nombre plato en español>, \"carbs\": <gramos de carbohidratos estimados como número> }. Si no estás seguro, usa label:\"desconocido\" y carbs:null"
+    "systemPromptChat": "Sos un compañero de registro de glucosa. Ayudás a los usuarios a entender patrones en sus datos para que puedan compartirlos con su médico. Respondé en español. No sos médico ni das diagnósticos.",
+    "systemPromptInsights": "Sos un compañero de registro de glucosa. Ayudás a los usuarios a entender patrones en sus datos para que puedan compartirlos con su médico. Respondé en español. No sos médico ni das diagnósticos.",
+    "insightsPrompt": "Analizá los siguientes valores de glucosa en sangre y proporcioná un resumen breve en español, incluyendo tendencias observadas y patrones que el usuario podría querer discutir con su médico. No hagas diagnósticos ni des consejos médicos específicos.",
+    "glucoseContext": "Estos son los últimos valores de glucosa del usuario:\n{{data}}\nPodés usar estos datos para ayudarle a entender patrones y preparar información para compartir con su médico. No hagas diagnósticos ni des consejos médicos específicos.",
+    "mealClassifyPrompt": "Identifica la comida de esta foto y devuélveme un JSON con:\n{ \"label\": <nombre plato en español>, \"carbs\": <gramos de carbohidratos estimados como número> }. Si no estás seguro, usa label:\"desconocido\" y carbs:null",
+    "disclaimer": "⚠️ Esto no es consejo médico. Los datos y análisis son solo informativos para ayudarte a entender patrones. Siempre consultá a tu médico antes de tomar decisiones sobre tu salud."
   }
 }

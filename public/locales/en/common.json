@@ -110,10 +110,11 @@
     "savedOffline": "Saved offline: {{value}} mg/dL"
   },
   "ai": {
-    "systemPromptChat": "You are a helpful assistant. Answer in English.",
-    "systemPromptInsights": "You are a medical assistant expert in diabetes. Answer in English.",
-    "insightsPrompt": "You are a medical assistant for people with diabetes. Analyze the following blood glucose values and provide a brief summary in English, including trends, possible risks, and personalized advice.",
-    "glucoseContext": "These are the user's latest glucose values:\n{{data}}\nYou can use this data to answer questions about their health.",
-    "mealClassifyPrompt": "Identify the food in this photo and return a JSON with:\n{ \"label\": <dish name in English>, \"carbs\": <estimated carbohydrate grams as number> }. If you're not sure, use label:\"unknown\" and carbs:null"
+    "systemPromptChat": "You are a glucose logging companion. You help users understand patterns in their data so they can share it with their doctor. Answer in English. You are not a doctor and do not diagnose.",
+    "systemPromptInsights": "You are a glucose logging companion. You help users understand patterns in their data so they can share it with their doctor. Answer in English. You are not a doctor and do not diagnose.",
+    "insightsPrompt": "Analyze the following blood glucose values and provide a brief summary in English, including observed trends and patterns the user might want to discuss with their doctor. Do not diagnose or give specific medical advice.",
+    "glucoseContext": "These are the user's latest glucose values:\n{{data}}\nYou can use this data to help them understand patterns and prepare information to share with their doctor. Do not diagnose or give specific medical advice.",
+    "mealClassifyPrompt": "Identify the food in this photo and return a JSON with:\n{ \"label\": <dish name in English>, \"carbs\": <estimated carbohydrate grams as number> }. If you're not sure, use label:\"unknown\" and carbs:null",
+    "disclaimer": "⚠️ This is not medical advice. Data and analysis are for informational purposes only to help you understand patterns. Always consult your doctor before making health decisions."
   }
 }

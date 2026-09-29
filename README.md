@@ -1,22 +1,51 @@
 # Diabetics-AI
 
-Diabetics‑AI is an experimental Next.js app that assists people with diabetes in tracking their glucose levels. The application stores readings in PostgreSQL using Prisma and leverages OpenAI for conversational help and data analysis.
+<!-- MARKETING: headline -->
+> **Registrá tu glucosa. Entendé patrones. Compartí con tu médico.**
+>
+> Diabetics-AI es tu compañero de registro: historial, insights con IA y reportes listos para la consulta. No reemplaza consejo médico.
+<!-- /MARKETING: headline -->
+
+<!-- MARKETING: one-pager -->
+Diabetics-AI ayuda a personas con diabetes a registrar glucosa, ver tendencias y preparar la consulta. Free = log + chart. Pro = chat, insights y meals con IA. Hecho para uso diario, con disclaimer claro: apoyo al registro, no diagnóstico.
+<!-- /MARKETING: one-pager -->
+
+## Free vs Premium
+
+| Feature | Free | Premium |
+| --- | :---: | :---: |
+| Registro de glucosa ilimitado | ✅ | ✅ |
+| Gráficos e historial | ✅ | ✅ |
+| Exportar CSV | ✅ | ✅ |
+| Chat con IA | 10/mes | ♾️ Ilimitado |
+| AI Insights (análisis de patrones) | 5/mes | ♾️ Ilimitado |
+| Clasificador de comidas | 3/mes | ♾️ Ilimitado |
+| PDF para compartir con médico | ❌ | ✅ |
+| Soporte prioritario | ❌ | ✅ |
+
+<!-- MARKETING: paywall -->
+El plan gratuito cubre registro y gráficos. Pro desbloquea chat con IA, insights automáticos y clasificador de comidas — USD 9.99/mes.
+
+**[Probar Pro →](/pricing)**
+<!-- /MARKETING: paywall -->
 
 ## Features
 
-- **Chatbot** – talk with an AI assistant (Spanish responses) using text or voice.
-- **Glucose history** – log readings, view recent entries and a chart with anomaly warnings.
-- **AI insights** – brief analysis of the last readings powered by OpenAI.
-- **Meal classifier** – upload a food photo and get an estimate of carbohydrates and a serving suggestion.
-- **Export & share** – download your data as CSV or create a PDF report to share with a doctor.
+- **Registro de glucosa** — Anotá tus mediciones de forma simple, con soporte offline
+- **Gráficos e historial** — Visualizá tendencias y detectá anomalías
+- **Chat con IA** — Preguntale sobre tus datos (voz o texto)
+- **AI Insights** — Resúmenes automáticos de patrones observados
+- **Clasificador de comidas** — Subí una foto y obtené estimaciones de carbohidratos
+- **Exportar y compartir** — Descargá CSV o generá un PDF para tu médico
 
 ## Local Development Setup
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org) v18 or newer
+- [Node.js](https://nodejs.org) v18+
 - PostgreSQL database (local or cloud)
 - OpenAI API key
+- Stripe account (for subscription features)
 
 ### Installation
 
@@ -57,6 +86,10 @@ Visit [http://localhost:3000](http://localhost:3000) to use the app.
 | `NEXTAUTH_SECRET` | Yes | Secret for NextAuth.js session encryption. Generate with `openssl rand -base64 32` |
 | `NEXTAUTH_URL` | Dev only | Base URL for NextAuth. Set to `http://localhost:3000` for local dev. Auto-set on Vercel. |
 | `OPENAI_API_KEY` | Yes | API key for OpenAI (chat, insights, TTS features) |
+| `STRIPE_SECRET_KEY` | Yes | Stripe secret key (`sk_test_...` for test mode, `sk_live_...` for production). Get it at [dashboard.stripe.com/apikeys](https://dashboard.stripe.com/apikeys) |
+| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Yes | Stripe publishable key (`pk_test_...` or `pk_live_...`). Used client-side for Stripe.js |
+| `STRIPE_WEBHOOK_SECRET` | Yes | Webhook secret for verifying Stripe events (`whsec_...`). Get it when creating a webhook endpoint, or use `stripe listen --forward-to localhost:3000/api/stripe/webhook` for local dev |
+| `STRIPE_PRICE_ID` | Yes | Price ID for the Premium subscription plan (`price_...`). Create a product in Stripe Dashboard → Products with $9.99/month recurring |
 
 ## Deploying to Vercel
 
@@ -74,11 +107,7 @@ Ensure your code is pushed to a GitHub repository.
 1. In your Vercel project dashboard, go to **Storage** tab
 2. Click **Create Database** → **Postgres**
 3. Follow the prompts to create a new PostgreSQL database
-4. Vercel will automatically add the following environment variables:
-   - `POSTGRES_URL` (use this as `DATABASE_URL`)
-   - `POSTGRES_URL_NON_POOLING` (use this as `DIRECT_URL`)
-   - `POSTGRES_PRISMA_URL`
-   - `POSTGRES_USER`, `POSTGRES_PASSWORD`, etc.
+4. Vercel will automatically add the connection environment variables
 
 ### 4. Configure Environment Variables
 
@@ -90,52 +119,32 @@ In your Vercel project settings, go to **Settings** → **Environment Variables*
 | `DIRECT_URL` | Copy from `POSTGRES_URL_NON_POOLING` |
 | `NEXTAUTH_SECRET` | Generate with `openssl rand -base64 32` |
 | `OPENAI_API_KEY` | Your OpenAI API key |
+| `STRIPE_SECRET_KEY` | Your Stripe secret key |
+| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Your Stripe publishable key |
+| `STRIPE_WEBHOOK_SECRET` | Your Stripe webhook secret |
+| `STRIPE_PRICE_ID` | Your Stripe price ID for Premium |
 
 > **Note:** `NEXTAUTH_URL` is automatically set by Vercel to your deployment URL.
 
-### 5. Run Database Migration
+### 5. Configure Stripe Webhook
+
+1. Go to [Stripe Dashboard → Webhooks](https://dashboard.stripe.com/webhooks)
+2. Add endpoint: `https://your-domain.vercel.app/api/stripe/webhook`
+3. Select events: `checkout.session.completed`, `customer.subscription.updated`, `customer.subscription.deleted`
+4. Copy the signing secret to `STRIPE_WEBHOOK_SECRET`
+
+### 6. Run Database Migration
 
 After the first deployment, run the Prisma migration against your production database:
 
 ```bash
-# Using Vercel CLI
 npx vercel env pull .env.production.local
 npx prisma migrate deploy
 ```
 
-Or use the Vercel Postgres dashboard to run the migration SQL directly.
+### 7. Deploy
 
-### 6. Deploy
-
-Push to your main branch or trigger a deployment from the Vercel dashboard. The build will automatically:
-1. Install dependencies
-2. Generate the Prisma client (`postinstall` script)
-3. Build the Next.js application
-
-## Alternative Database Options
-
-### Using External PostgreSQL
-
-You can use any PostgreSQL provider (Supabase, Neon, Railway, etc.):
-
-1. Create a PostgreSQL database with your provider
-2. Get the connection strings (pooled and direct)
-3. Add them to Vercel environment variables as `DATABASE_URL` and `DIRECT_URL`
-
-### Local Development with Docker
-
-```bash
-# Start a local PostgreSQL container
-docker run --name diabetics-postgres \
-  -e POSTGRES_PASSWORD=postgres \
-  -e POSTGRES_DB=diabetics_ai \
-  -p 5432:5432 \
-  -d postgres:16
-
-# Update .env
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/diabetics_ai"
-DIRECT_URL="postgresql://postgres:postgres@localhost:5432/diabetics_ai"
-```
+Push to your main branch or trigger a deployment from the Vercel dashboard.
 
 ## Useful Commands
 
@@ -157,43 +166,32 @@ DIRECT_URL="postgresql://postgres:postgres@localhost:5432/diabetics_ai"
 | `/api/readings` | `POST` | Save a glucose reading |
 | `/api/readings` | `GET` | List all readings for authenticated user |
 | `/api/readings/last` | `GET` | Fetch the last recorded reading |
-| `/api/chat` | `POST` | Send chat messages to the assistant |
+| `/api/chat` | `POST` | Send chat messages to the AI companion |
 | `/api/insights` | `GET` | Get AI analysis of recent readings |
 | `/api/classify_meal` | `POST` | Upload a meal photo for nutrition estimation |
 | `/api/tts` | `POST` | Generate speech audio using OpenAI TTS |
+| `/api/subscription` | `GET` | Get current user subscription status |
+| `/api/stripe/create-checkout-session` | `POST` | Create Stripe checkout session for Premium |
+| `/api/stripe/create-portal-session` | `POST` | Create Stripe customer portal session |
+| `/api/stripe/webhook` | `POST` | Handle Stripe webhook events |
 | `/api/auth/register` | `POST` | Register a new user |
 | `/api/auth/[...nextauth]` | `*` | NextAuth.js authentication endpoints |
 
-## Main Components
+## License
 
-- `ChatInterface` – chat UI with voice input and special commands
-- `HistoryChart` – chart of past readings with anomaly alerts
-- `AIInsights` – displays AI analysis from `/api/insights`
-- `MealClassifier` – handles meal photo upload and response
-- `ExportData` and `ShareWithDoctor` – CSV download and PDF report generation
-
-## Troubleshooting
-
-### "NEXTAUTH_SECRET" error on Vercel
-
-Make sure you've added `NEXTAUTH_SECRET` to your Vercel environment variables. Generate one with:
-```bash
-openssl rand -base64 32
-```
-
-### Database connection errors
-
-- Verify your `DATABASE_URL` and `DIRECT_URL` are correct
-- For Vercel Postgres, ensure you're using the pooled URL for `DATABASE_URL`
-- Check that your database allows connections from Vercel's IP ranges
-
-### Prisma Client not generated
-
-The `postinstall` script should handle this automatically. If issues persist, run:
-```bash
-npx prisma generate
-```
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
 
 ---
 
-This project is for demonstration purposes only and should not replace professional medical advice.
+## ⚠️ Medical Disclaimer
+
+**Diabetics-AI is NOT a medical device and does NOT provide medical advice.**
+
+This application is a glucose logging companion designed to help you track your readings, visualize patterns, and prepare data to share with your healthcare provider. The AI features provide observations about your data patterns — they do not diagnose, treat, or offer medical recommendations.
+
+- **Do not** use this app as a substitute for professional medical advice, diagnosis, or treatment
+- **Do not** make health decisions based solely on information from this app
+- **Always** consult your doctor, endocrinologist, or qualified healthcare provider for medical guidance
+- **Always** follow your prescribed treatment plan and medication schedule
+
+The creators and contributors of Diabetics-AI are not liable for any health outcomes resulting from the use of this application. If you experience a medical emergency, contact your local emergency services immediately.
