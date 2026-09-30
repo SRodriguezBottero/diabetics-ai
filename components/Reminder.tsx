@@ -141,10 +141,10 @@ export default function Reminder() {
     const newEnabled = !enabled
 
     if (newEnabled) {
-      if (status !== 'granted') {
-        const granted = await requestPermissionAndToken()
-        if (!granted) return
-      }
+      // Always (re)register FCM token when enabling — browser permission
+      // can already be "granted" while we still have no token saved.
+      const granted = await requestPermissionAndToken()
+      if (!granted) return
     }
 
     setEnabled(newEnabled)

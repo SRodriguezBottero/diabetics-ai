@@ -48,15 +48,17 @@ async function registerFirebaseServiceWorker(): Promise<ServiceWorkerRegistratio
       appId: firebaseConfig.appId || '',
     })
 
+    // Dedicated FCM scope so this does not fight the PWA /sw.js on "/"
+    const swScope = '/firebase-cloud-messaging-push-scope'
     const swUrl = `/firebase-messaging-sw.js?${configParams.toString()}`
-    
-    const existingRegistration = await navigator.serviceWorker.getRegistration('/firebase-messaging-sw.js')
-    if (existingRegistration) {
+
+    const existingRegistration = await navigator.serviceWorker.getRegistration(swScope)
+    if (existingRegistration?.active?.scriptURL.includes('firebase-messaging-sw.js')) {
       return existingRegistration
     }
 
     const registration = await navigator.serviceWorker.register(swUrl, {
-      scope: '/firebase-messaging-sw.js',
+      scope: swScope,
     })
 
     await navigator.serviceWorker.ready
@@ -109,11 +111,29 @@ export async function requestNotificationPermission(): Promise<string | null> {
 export function onForegroundMessage(callback: (payload: unknown) => void): (() => void) | null {
   if (typeof window === 'undefined') return null
 
+  let unsubscribe: (() => void) | undefined
+
   getFirebaseMessaging().then((messaging) => {
-    if (messaging) {
-      onMessage(messaging, callback)
-    }
+    if (!messaging) return
+
+    unsubscribe = onMessage(messaging, (payload) => {
+      callback(payload)
+
+      // FCM does not show a system banner while the tab is focused — do it ourselves.
+      const title = payload.notification?.title || 'Diabetics-AI'
+      const body = payload.notification?.body || ''
+      if (Notification.permission === 'granted' && (title || body)) {
+        new Notification(title, {
+          body,
+          icon: '/icons/icon-192x192.png',
+          badge: '/icons/icon-72x72.png',
+          data: payload.data,
+        })
+      }
+    })
   })
 
-  return () => {}
+  return () => {
+    unsubscribe?.()
+  }
 }
