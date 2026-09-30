@@ -1,5 +1,4 @@
 import '../styles/globals.css'
-import Reminder from '../components/Reminder'
 import PWAInstallPrompt from '../components/PWAInstallPrompt'
 import OfflineIndicator from '../components/OfflineIndicator'
 import ServiceWorkerUpdater from '../components/ServiceWorkerUpdater'
@@ -48,7 +47,6 @@ function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
         <ServiceWorkerUpdater />
         <OfflineIndicator />
         <AuthGuard>
-          <Reminder />
           <Component {...pageProps} />
         </AuthGuard>
         <PWAInstallPrompt />
