@@ -7,6 +7,8 @@ export default function Document() {
         {/* PWA Manifest */}
         <link rel="manifest" href="/manifest.json" />
         
+        {/* Default document title — pages override via next/head */}
+        <title>Diabetics-AI</title>
         {/* Theme Color */}
         <meta name="theme-color" content="#6366f1" />
         <meta name="msapplication-TileColor" content="#6366f1" />

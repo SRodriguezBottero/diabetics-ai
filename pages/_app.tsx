@@ -4,6 +4,7 @@ import OfflineIndicator from '../components/OfflineIndicator'
 import ServiceWorkerUpdater from '../components/ServiceWorkerUpdater'
 import type { AppProps } from 'next/app'
 import { useEffect } from 'react'
+import Head from 'next/head'
 import { SessionProvider, useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { appWithTranslation } from 'next-i18next/pages'
@@ -28,7 +29,9 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
   if (status === 'loading') {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-gray-500">{t('app.loading')}</div>
+        <div className="text-gray-500" role="status" aria-live="polite">
+          {t('app.loading')}
+        </div>
       </div>
     )
   }
@@ -44,6 +47,9 @@ function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return (
     <SessionProvider session={session}>
       <LanguageProvider>
+        <Head>
+          <title>Diabetics-AI</title>
+        </Head>
         <ServiceWorkerUpdater />
         <OfflineIndicator />
         <AuthGuard>

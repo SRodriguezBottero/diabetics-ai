@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import Head from 'next/head'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
@@ -99,8 +100,11 @@ export default function PricingPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-100 to-white py-10 px-4">
+      <Head>
+        <title>Diabetics-AI | Planes</title>
+      </Head>
       <div className="max-w-4xl mx-auto">
-        <Link href="/" className="text-indigo-600 hover:text-indigo-800 mb-6 inline-block">
+        <Link href="/" className="text-indigo-700 hover:text-indigo-900 mb-6 inline-block underline">
           ← Volver al inicio
         </Link>
 
@@ -120,7 +124,7 @@ export default function PricingPage() {
               <div className="mb-8 p-4 bg-white rounded-lg shadow-md text-center">
                 <p className="text-gray-600">
                   Tu plan actual:{' '}
-                  <span className={`font-bold ${isPremium ? 'text-emerald-600' : 'text-gray-800'}`}>
+                  <span className={`font-bold ${isPremium ? 'text-emerald-800' : 'text-gray-800'}`}>
                     {isPremium ? 'Premium' : 'Gratuito'}
                   </span>
                 </p>
@@ -201,7 +205,7 @@ export default function PricingPage() {
                   <button
                     onClick={handleUpgrade}
                     disabled={checkoutLoading}
-                    className="w-full py-3 px-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-semibold transition-colors disabled:opacity-50"
+                    className="w-full py-3 px-4 bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg font-semibold transition-colors disabled:opacity-50"
                   >
                     {checkoutLoading ? 'Procesando...' : 'Actualizar a Premium'}
                   </button>
@@ -238,8 +242,10 @@ export default function PricingPage() {
         {/* Toast */}
         {toast && (
           <div
+            role="status"
+            aria-live="polite"
             className={`fixed bottom-8 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-lg shadow-lg z-50 ${
-              toast.type === 'success' ? 'bg-emerald-600 text-white' : 'bg-red-600 text-white'
+              toast.type === 'success' ? 'bg-emerald-800 text-white' : 'bg-red-700 text-white'
             }`}
           >
             {toast.message}

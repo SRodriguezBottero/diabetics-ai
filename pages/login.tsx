@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import Head from 'next/head'
 import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'react-i18next'
@@ -53,6 +54,9 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-100 to-white flex items-center justify-center px-4">
+      <Head>
+        <title>{t('app.pageTitleLogin')}</title>
+      </Head>
       <div className="absolute top-4 right-4">
         <LanguageSwitcher />
       </div>
@@ -77,6 +81,7 @@ export default function LoginPage() {
                 onChange={(e) => setName(e.target.value)}
                 className="mt-1 block w-full border-gray-300 rounded-md shadow-sm px-3 py-2"
                 placeholder={t('auth.namePlaceholder')}
+                autoComplete="name"
               />
             </div>
           )}
@@ -93,6 +98,7 @@ export default function LoginPage() {
               onChange={(e) => setEmail(e.target.value)}
               className="mt-1 block w-full border-gray-300 rounded-md shadow-sm px-3 py-2"
               placeholder={t('auth.emailPlaceholder')}
+              autoComplete="email"
             />
           </div>
 
@@ -108,11 +114,14 @@ export default function LoginPage() {
               onChange={(e) => setPassword(e.target.value)}
               className="mt-1 block w-full border-gray-300 rounded-md shadow-sm px-3 py-2"
               placeholder={t('auth.passwordPlaceholder')}
+              autoComplete={isRegister ? 'new-password' : 'current-password'}
             />
           </div>
 
           {error && (
-            <p className="text-red-600 text-sm text-center">{error}</p>
+            <p className="text-red-700 text-sm text-center" role="alert">
+              {error}
+            </p>
           )}
 
           <button
@@ -132,7 +141,7 @@ export default function LoginPage() {
               setIsRegister(!isRegister)
               setError('')
             }}
-            className="text-indigo-600 hover:text-indigo-500 font-medium"
+            className="text-indigo-700 hover:text-indigo-800 font-medium underline"
           >
             {isRegister ? t('auth.signIn') : t('auth.register')}
           </button>

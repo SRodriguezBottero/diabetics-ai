@@ -106,7 +106,7 @@ export default function ShareWithDoctor() {
             </span>
             <Link
               href="/pricing"
-              className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-md font-semibold text-sm"
+              className="bg-emerald-700 hover:bg-emerald-800 text-white px-4 py-2 rounded-md font-semibold text-sm"
             >
               Actualizar
             </Link>
@@ -119,7 +119,7 @@ export default function ShareWithDoctor() {
   return (
     <section className="bg-white shadow rounded-lg p-4 mb-4 flex items-center gap-4">
       <button
-        className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-md font-semibold"
+        className="bg-emerald-700 hover:bg-emerald-800 text-white px-4 py-2 rounded-md font-semibold"
         onClick={handleShare}
         disabled={loading}
       >

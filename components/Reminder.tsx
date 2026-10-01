@@ -197,25 +197,33 @@ export default function Reminder() {
         </div>
 
         <div className="flex items-center gap-3 flex-wrap">
+          <label htmlFor="reminder-time" className="sr-only">
+            {t('reminder.timeLabel')}
+          </label>
           <input
+            id="reminder-time"
             type="time"
             value={time}
             onChange={e => handleTimeChange(e.target.value)}
             className="border rounded p-1.5 text-sm"
             disabled={saving}
+            aria-label={t('reminder.timeLabel')}
           />
           
           <button
+            type="button"
             onClick={handleToggle}
             disabled={saving || status === 'requesting'}
+            aria-label={t('reminder.toggleLabel')}
+            aria-pressed={enabled && status === 'granted'}
             className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ${
               enabled && status === 'granted'
                 ? 'bg-indigo-600'
                 : 'bg-gray-200'
             } ${saving || status === 'requesting' ? 'opacity-50 cursor-not-allowed' : ''}`}
-            aria-pressed={enabled}
           >
             <span
+              aria-hidden="true"
               className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
                 enabled && status === 'granted' ? 'translate-x-6' : 'translate-x-1'
               }`}
@@ -234,7 +242,9 @@ export default function Reminder() {
       </p>
 
       {error && (
-        <p className="text-red-500 text-sm mt-2">{error}</p>
+        <p className="text-red-700 text-sm mt-2" role="alert">
+          {error}
+        </p>
       )}
     </section>
   )

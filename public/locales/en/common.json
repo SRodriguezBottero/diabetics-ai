@@ -1,7 +1,11 @@
 {
   "app": {
     "title": "Diabetics-AI",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "pageTitleHome": "Diabetics-AI | Home",
+    "pageTitleLogin": "Diabetics-AI | Sign in",
+    "pageTitlePricing": "Diabetics-AI | Pricing",
+    "pageTitleHistory": "Diabetics-AI | History"
   },
   "auth": {
     "signOut": "Sign out",
@@ -35,6 +39,7 @@
   "chat": {
     "title": "Talk to me",
     "placeholder": "How can I help you?",
+    "inputLabel": "Message for the assistant",
     "send": "Send",
     "greeting": "Hello! How can I help you today? If you have questions about your health or the glucose data you've shared, feel free to ask me."
   },
@@ -77,6 +82,8 @@
   },
   "reminder": {
     "title": "⏰ Daily reminder",
+    "timeLabel": "Reminder time",
+    "toggleLabel": "Enable or disable daily reminder",
     "hint": "Enable notifications to receive a daily reminder.",
     "activeHint": "We'll notify you at this time every day.",
     "notificationTitle": "Time to log your glucose!",
@@ -89,6 +96,7 @@
   },
   "mealClassifier": {
     "title": "Food recognition",
+    "fileLabel": "Upload a meal photo",
     "analyzing": "Analyzing image…",
     "portionLooksLike": "This portion looks like",
     "unknown": "Could not recognize the food 🙁",
@@ -101,12 +109,15 @@
     "suggestionBalanced": "Balanced portion. You can pair it with water or unsweetened tea. Enjoy your meal!"
   },
   "voice": {
-    "notAvailable": "Speech Recognition is not available"
+    "notAvailable": "Speech Recognition is not available",
+    "start": "Start voice dictation",
+    "stop": "Stop voice dictation"
   },
   "language": {
     "switch": "Language",
     "spanish": "Español",
-    "english": "English"
+    "english": "English",
+    "groupLabel": "Select language"
   },
   "offline": {
     "mode": "Offline mode",

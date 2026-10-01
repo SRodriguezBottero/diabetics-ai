@@ -1,5 +1,6 @@
 // pages/history.tsx
 import { useEffect, useState } from 'react'
+import Head from 'next/head'
 import { Line } from 'react-chartjs-2'
 import {
   Chart as ChartJS,
@@ -29,6 +30,9 @@ export default function History() {
 
   return (
     <div className="max-w-lg mx-auto p-4">
+      <Head>
+        <title>{t('app.pageTitleHistory')}</title>
+      </Head>
       <h1 className="text-xl font-bold">{t('history.pageTitle')}</h1>
       {log.length
         ? <Line data={data} />

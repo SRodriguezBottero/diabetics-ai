@@ -78,26 +78,31 @@ export default function MealClassifier() {
   return (
     <div className="my-6 p-4 bg-white rounded-lg shadow-md">
       <h2 className="font-bold mb-3">{t('mealClassifier.title')}</h2>
-      <div className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded px-3 py-2 mb-3">
+      <div className="text-xs text-amber-900 bg-amber-50 border border-amber-200 rounded px-3 py-2 mb-3">
         ⚠️ {t('ai.disclaimer')}
       </div>
 
+      <label htmlFor="meal-photo" className="block text-sm font-medium text-gray-700 mb-2">
+        {t('mealClassifier.fileLabel')}
+      </label>
       <input
-        className="file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-emerald-600 file:text-white hover:file:bg-emerald-700"
+        id="meal-photo"
+        className="file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-emerald-700 file:text-white hover:file:bg-emerald-800"
         type="file"
         accept="image/*"
         capture="environment"
         onChange={handleFileChange}
+        aria-label={t('mealClassifier.fileLabel')}
       />
 
       {loading && <p className="mt-4 text-sm text-gray-500">{t('mealClassifier.analyzing')}</p>}
 
       {!loading && limitReached && (
         <div className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-lg">
-          <p className="text-amber-800 text-sm">{limitMessage}</p>
+          <p className="text-amber-900 text-sm">{limitMessage}</p>
           <Link
             href="/pricing"
-            className="inline-block mt-2 text-sm font-medium text-emerald-600 hover:text-emerald-800"
+            className="inline-block mt-2 text-sm font-medium text-emerald-800 hover:text-emerald-900 underline"
           >
             Actualizar a Premium →
           </Link>

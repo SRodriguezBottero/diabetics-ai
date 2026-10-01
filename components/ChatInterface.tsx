@@ -126,10 +126,10 @@ export default function ChatInterface() {
 
   return (
     <div className="space-y-4 relative">
-      <div className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded px-3 py-2 mb-2">
+      <div className="text-xs text-amber-900 bg-amber-50 border border-amber-200 rounded px-3 py-2 mb-2">
         ⚠️ {t('ai.disclaimer')}
       </div>
-      <div className="h-64 overflow-y-auto space-y-2">
+      <div className="h-64 overflow-y-auto space-y-2" role="log" aria-live="polite" aria-relevant="additions">
         {msgs.map((m,i) => (
           <div key={i} className={m.role==='user' ? 'text-right' : 'text-left'}>
             <span className="inline-block px-3 py-1 rounded bg-blue-100 whitespace-pre-line">
@@ -141,14 +141,20 @@ export default function ChatInterface() {
 
       <div className="flex space-x-2">
         <VoiceButton onResult={text => { setInput(text); send(text); }} />
+        <label htmlFor="chat-input" className="sr-only">
+          {t('chat.inputLabel')}
+        </label>
         <input
+          id="chat-input"
           className="flex-1 border p-2 rounded"
           value={input}
           onChange={e => setInput(e.target.value)}
           placeholder={t('chat.placeholder')}
+          aria-label={t('chat.inputLabel')}
         />
         <button
-          className="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-2 rounded-md"
+          type="button"
+          className="bg-emerald-700 hover:bg-emerald-800 text-white px-6 py-2 rounded-md"
           onClick={() => send(input)}
         >
           {t('chat.send')}
@@ -156,7 +162,11 @@ export default function ChatInterface() {
       </div>
 
       {toast && (
-        <div className="fixed left-1/2 bottom-8 transform -translate-x-1/2 bg-emerald-600 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-fade-in">
+        <div
+          role="status"
+          aria-live="polite"
+          className="fixed left-1/2 bottom-8 transform -translate-x-1/2 bg-emerald-800 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-fade-in"
+        >
           {toast}
         </div>
       )}

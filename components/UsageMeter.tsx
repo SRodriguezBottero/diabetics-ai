@@ -50,7 +50,7 @@ export default function UsageMeter() {
           </div>
           <Link
             href="/pricing"
-            className="text-sm text-emerald-600 hover:text-emerald-800"
+            className="text-sm font-medium text-emerald-800 hover:text-emerald-900 underline"
           >
             Administrar →
           </Link>
@@ -72,14 +72,14 @@ export default function UsageMeter() {
             Plan Gratuito
           </span>
           {isNearLimit && (
-            <span className="text-xs text-amber-600 font-medium">
+            <span className="text-xs text-amber-800 font-medium">
               Cerca del límite
             </span>
           )}
         </div>
         <Link
           href="/pricing"
-          className="text-sm text-indigo-600 hover:text-indigo-800 font-medium"
+          className="text-sm text-indigo-800 hover:text-indigo-900 font-medium underline"
         >
           Actualizar a Premium →
         </Link>

@@ -1,0 +1,151 @@
+{
+  "base": "http://localhost:3000",
+  "email": "a11y-audit-1790814362373@example.com",
+  "scannedAt": "2026-10-01T00:26:14.952Z",
+  "report": [
+    {
+      "label": "login-signin",
+      "url": "http://localhost:3000/login",
+      "violations": [
+        {
+          "id": "document-title",
+          "impact": "serious",
+          "description": "Ensure each HTML document contains a non-empty <title> element",
+          "help": "Documents must have <title> element to aid in navigation",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.13/document-title?application=playwright",
+          "tags": [
+            "wcag2a",
+            "wcag242"
+          ],
+          "nodes": 1,
+          "targets": [
+            "html"
+          ],
+          "failureSummary": "Fix any of the following:\n  Document does not have a non-empty <title> element"
+        }
+      ],
+      "passes": 20,
+      "incomplete": 2
+    },
+    {
+      "label": "login-signin-native-validation",
+      "url": "http://localhost:3000/login",
+      "violations": [
+        {
+          "id": "document-title",
+          "impact": "serious",
+          "description": "Ensure each HTML document contains a non-empty <title> element",
+          "help": "Documents must have <title> element to aid in navigation",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.13/document-title?application=playwright",
+          "tags": [
+            "wcag2a",
+            "wcag242"
+          ],
+          "nodes": 1,
+          "targets": [
+            "html"
+          ],
+          "failureSummary": "Fix any of the following:\n  Document does not have a non-empty <title> element"
+        }
+      ],
+      "passes": 20,
+      "incomplete": 2
+    },
+    {
+      "label": "login-register",
+      "url": "http://localhost:3000/login",
+      "violations": [
+        {
+          "id": "document-title",
+          "impact": "serious",
+          "description": "Ensure each HTML document contains a non-empty <title> element",
+          "help": "Documents must have <title> element to aid in navigation",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.13/document-title?application=playwright",
+          "tags": [
+            "wcag2a",
+            "wcag242"
+          ],
+          "nodes": 1,
+          "targets": [
+            "html"
+          ],
+          "failureSummary": "Fix any of the following:\n  Document does not have a non-empty <title> element"
+        }
+      ],
+      "passes": 20,
+      "incomplete": 2
+    },
+    {
+      "label": "pricing",
+      "url": "http://localhost:3000/pricing",
+      "violations": [
+        {
+          "id": "document-title",
+          "impact": "serious",
+          "description": "Ensure each HTML document contains a non-empty <title> element",
+          "help": "Documents must have <title> element to aid in navigation",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.13/document-title?application=playwright",
+          "tags": [
+            "wcag2a",
+            "wcag242"
+          ],
+          "nodes": 1,
+          "targets": [
+            "html"
+          ],
+          "failureSummary": "Fix any of the following:\n  Document does not have a non-empty <title> element"
+        }
+      ],
+      "passes": 18,
+      "incomplete": 2
+    },
+    {
+      "label": "home-authenticated",
+      "url": "http://localhost:3000/login",
+      "violations": [
+        {
+          "id": "document-title",
+          "impact": "serious",
+          "description": "Ensure each HTML document contains a non-empty <title> element",
+          "help": "Documents must have <title> element to aid in navigation",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.13/document-title?application=playwright",
+          "tags": [
+            "wcag2a",
+            "wcag242"
+          ],
+          "nodes": 1,
+          "targets": [
+            "html"
+          ],
+          "failureSummary": "Fix any of the following:\n  Document does not have a non-empty <title> element"
+        }
+      ],
+      "passes": 4,
+      "incomplete": 0
+    },
+    {
+      "label": "history",
+      "url": "http://localhost:3000/login",
+      "violations": [
+        {
+          "id": "document-title",
+          "impact": "serious",
+          "description": "Ensure each HTML document contains a non-empty <title> element",
+          "help": "Documents must have <title> element to aid in navigation",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.13/document-title?application=playwright",
+          "tags": [
+            "wcag2a",
+            "wcag242"
+          ],
+          "nodes": 1,
+          "targets": [
+            "html"
+          ],
+          "failureSummary": "Fix any of the following:\n  Document does not have a non-empty <title> element"
+        }
+      ],
+      "passes": 20,
+      "incomplete": 2
+    }
+  ]
+}

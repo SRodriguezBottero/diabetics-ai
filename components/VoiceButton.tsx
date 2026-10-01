@@ -1,6 +1,7 @@
 // components/VoiceButton.tsx
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
+import { useTranslation } from 'react-i18next'
 
 interface Props { onResult: (text: string) => void }
 
@@ -43,6 +44,7 @@ interface SpeechRecognitionEvent {
 
 export default function VoiceButton({ onResult }: Props) {
   const { locale } = useRouter()
+  const { t } = useTranslation('common')
   const [rec, setRec] = useState<SpeechRecognition | null>(null)
   const [listening, setListening] = useState(false)
   const [text, setText] = useState('')
@@ -129,12 +131,15 @@ export default function VoiceButton({ onResult }: Props) {
 
   return (
     <button
+      type="button"
       className={`rounded-full p-3 border ${
-        listening ? 'bg-red-200' : 'bg-emerald-500 text-white'
+        listening ? 'bg-red-200 text-red-900' : 'bg-emerald-700 text-white'
       }`}
       onClick={toggle}
+      aria-label={listening ? t('voice.stop') : t('voice.start')}
+      aria-pressed={listening}
     >
-      🎤
+      <span aria-hidden="true">🎤</span>
     </button>
   )
 }

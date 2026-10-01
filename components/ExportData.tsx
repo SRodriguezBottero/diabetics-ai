@@ -47,7 +47,7 @@ export default function ExportData() {
       >
         {downloading ? t('export.exporting') : t('export.button')}
       </button>
-      {error && <span className="text-red-500 text-sm">{error}</span>}
+      {error && <span className="text-red-700 text-sm" role="alert">{error}</span>}
     </section>
   );
 } 
