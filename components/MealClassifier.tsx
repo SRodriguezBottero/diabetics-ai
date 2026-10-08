@@ -76,9 +76,9 @@ export default function MealClassifier() {
   const isUnknown = result && ['desconocido', 'unknown'].includes(result.label)
 
   return (
-    <div className="my-6 p-4 bg-white rounded-lg shadow-md">
-      <h2 className="font-bold mb-3">{t('mealClassifier.title')}</h2>
-      <div className="text-xs text-amber-900 bg-amber-50 border border-amber-200 rounded px-3 py-2 mb-3">
+    <div>
+      <h2 className="text-base sm:text-lg font-semibold mb-3">{t('mealClassifier.title')}</h2>
+      <div className="text-xs text-amber-900 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mb-3">
         ⚠️ {t('ai.disclaimer')}
       </div>
 
@@ -87,7 +87,7 @@ export default function MealClassifier() {
       </label>
       <input
         id="meal-photo"
-        className="file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-emerald-700 file:text-white hover:file:bg-emerald-800"
+        className="file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-emerald-700 file:text-white hover:file:bg-emerald-800"
         type="file"
         accept="image/*"
         capture="environment"
@@ -98,7 +98,7 @@ export default function MealClassifier() {
       {loading && <p className="mt-4 text-sm text-gray-500">{t('mealClassifier.analyzing')}</p>}
 
       {!loading && limitReached && (
-        <div className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+        <div className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-xl">
           <p className="text-amber-900 text-sm">{limitMessage}</p>
           <Link
             href="/pricing"

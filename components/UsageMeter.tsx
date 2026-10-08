@@ -40,7 +40,7 @@ export default function UsageMeter() {
 
   if (usage.isPremium) {
     return (
-      <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4">
+      <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
@@ -65,7 +65,7 @@ export default function UsageMeter() {
   const isNearLimit = overallPercentage >= 70
 
   return (
-    <div className={`rounded-lg p-4 ${isNearLimit ? 'bg-amber-50 border border-amber-200' : 'bg-gray-50 border border-gray-200'}`}>
+    <div className={`rounded-xl p-4 ${isNearLimit ? 'bg-amber-50 border border-amber-200' : 'bg-gray-50 border border-gray-200'}`}>
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">

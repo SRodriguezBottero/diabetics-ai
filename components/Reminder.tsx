@@ -189,7 +189,7 @@ export default function Reminder() {
   }
 
   return (
-    <section className="bg-white shadow rounded-lg p-4 mb-4">
+    <section className="bg-white shadow-md rounded-xl p-4 sm:p-5">
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <div className="flex items-center gap-3">
           {getStatusIcon()}

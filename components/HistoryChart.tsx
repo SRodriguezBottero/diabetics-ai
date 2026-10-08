@@ -75,12 +75,11 @@ export default function HistoryChart() {
       });
   }, [t]);
 
-  if (loading) return <div className="text-center text-gray-500">{t('history.loading')}</div>;
-  if (!data || !data.labels.length) return <div className="text-center text-gray-500">{t('history.noData')}</div>;
+  if (loading) return <div className="text-center text-gray-500 py-8">{t('history.loading')}</div>;
+  if (!data || !data.labels.length) return <div className="text-center text-gray-500 py-8">{t('history.noData')}</div>;
 
   return (
-    <section className="bg-white shadow-md rounded-lg p-6">
-      <h2 className="text-lg font-semibold mb-4">{t('history.title')}</h2>
+    <div className="space-y-4">
       <Line
         data={data}
         options={{
@@ -102,10 +101,10 @@ export default function HistoryChart() {
         }}
       />
       {anomalies.some(Boolean) && (
-        <div className="mt-4 p-4 bg-red-100 border border-red-300 text-red-700 rounded">
+        <div className="p-4 bg-red-100 border border-red-300 text-red-700 rounded-xl">
           <strong>{t('history.alert')}</strong> {t('history.alertMessage')}
         </div>
       )}
-    </section>
+    </div>
   );
 }

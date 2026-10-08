@@ -49,6 +49,7 @@ function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
       <LanguageProvider>
         <Head>
           <title>Diabetics-AI</title>
+          <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content" />
         </Head>
         <ServiceWorkerUpdater />
         <OfflineIndicator />
