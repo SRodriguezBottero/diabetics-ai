@@ -133,5 +133,18 @@
     "glucoseContext": "These are the user's latest glucose values:\n{{data}}\nYou can use this data to help them understand patterns and prepare information to share with their doctor. Do not diagnose or give specific medical advice.",
     "mealClassifyPrompt": "Identify the food in this photo and return a JSON with:\n{ \"label\": <dish name in English>, \"carbs\": <estimated carbohydrate grams as number> }. If you're not sure, use label:\"unknown\" and carbs:null",
     "disclaimer": "⚠️ This is not medical advice. Data and analysis are for informational purposes only to help you understand patterns. Always consult your doctor before making health decisions."
+  },
+  "payment": {
+    "payWithMercadoPago": "Pay with MercadoPago",
+    "payWithStripe": "Pay with card",
+    "selectPaymentMethod": "Select payment method",
+    "recommendedForLatam": "Recommended for Latin America",
+    "mercadoPago": "MercadoPago",
+    "stripe": "Stripe",
+    "subscriptionProcessing": "Subscription in progress! Your account will be updated soon.",
+    "subscriptionActivated": "Subscription activated! Welcome to Premium.",
+    "paymentCanceled": "Payment canceled. No charges were made.",
+    "checkoutError": "Error creating checkout session",
+    "processingError": "Error processing payment"
   }
 }

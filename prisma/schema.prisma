@@ -19,12 +19,19 @@ model User {
   createdAt DateTime  @default(now())
   readings  Reading[]
 
+  // Payment provider selection
+  paymentProvider      String?   @default("stripe") // stripe | mercadopago
+
   // Stripe subscription fields
   stripeCustomerId     String?   @unique
   subscriptionId       String?   @unique
   subscriptionStatus   String?   @default("free") // free, active, canceled, past_due
   priceId              String?
   currentPeriodEnd     DateTime?
+
+  // MercadoPago subscription fields
+  mercadopagoPayerId       String?   @unique
+  mercadopagoPreapprovalId String?   @unique
 
   // Usage tracking for free tier limits
   chatMessagesUsed     Int       @default(0)
