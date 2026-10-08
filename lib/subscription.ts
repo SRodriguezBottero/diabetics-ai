@@ -10,6 +10,8 @@ export const PREMIUM_PRICE = 9.99
 
 export type SubscriptionStatus = 'free' | 'active' | 'canceled' | 'past_due'
 
+export type PaymentProvider = 'stripe' | 'mercadopago'
+
 export interface UsageInfo {
   chatMessagesUsed: number
   chatMessagesLimit: number
@@ -20,6 +22,7 @@ export interface UsageInfo {
   isPremium: boolean
   subscriptionStatus: SubscriptionStatus
   currentPeriodEnd: Date | null
+  paymentProvider: PaymentProvider | null
 }
 
 export async function getUserUsage(userId: string): Promise<UsageInfo> {
@@ -32,6 +35,7 @@ export async function getUserUsage(userId: string): Promise<UsageInfo> {
       insightsUsed: true,
       mealsClassifiedUsed: true,
       usageResetDate: true,
+      paymentProvider: true,
     },
   })
 
@@ -51,6 +55,7 @@ export async function getUserUsage(userId: string): Promise<UsageInfo> {
     isPremium,
     subscriptionStatus: (user.subscriptionStatus as SubscriptionStatus) || 'free',
     currentPeriodEnd: user.currentPeriodEnd,
+    paymentProvider: (user.paymentProvider as PaymentProvider) || null,
   }
 }
 

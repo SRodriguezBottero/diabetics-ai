@@ -5,6 +5,10 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { FREE_TIER_LIMITS, PREMIUM_PRICE } from '../lib/subscription'
 
+const LATAM_COUNTRIES = ['UY', 'AR', 'BR', 'MX', 'CL', 'CO', 'PE']
+
+type PaymentProvider = 'stripe' | 'mercadopago'
+
 interface SubscriptionInfo {
   isPremium: boolean
   subscriptionStatus: string
@@ -15,6 +19,7 @@ interface SubscriptionInfo {
   insightsLimit: number
   mealsClassifiedUsed: number
   mealsClassifiedLimit: number
+  paymentProvider?: PaymentProvider
 }
 
 export default function PricingPage() {
@@ -25,6 +30,25 @@ export default function PricingPage() {
   const [checkoutLoading, setCheckoutLoading] = useState(false)
   const [portalLoading, setPortalLoading] = useState(false)
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null)
+  const [detectedRegion, setDetectedRegion] = useState<'latam' | 'other' | null>(null)
+  const [selectedProvider, setSelectedProvider] = useState<PaymentProvider>('stripe')
+
+  useEffect(() => {
+    const detectRegion = async () => {
+      try {
+        const res = await fetch('https://ipapi.co/country_code/')
+        if (res.ok) {
+          const countryCode = await res.text()
+          const isLatam = LATAM_COUNTRIES.includes(countryCode.trim().toUpperCase())
+          setDetectedRegion(isLatam ? 'latam' : 'other')
+          setSelectedProvider(isLatam ? 'mercadopago' : 'stripe')
+        }
+      } catch {
+        setDetectedRegion('other')
+      }
+    }
+    detectRegion()
+  }, [])
 
   useEffect(() => {
     if (router.query.success === 'true') {
@@ -32,6 +56,9 @@ export default function PricingPage() {
       router.replace('/pricing', undefined, { shallow: true })
     } else if (router.query.canceled === 'true') {
       setToast({ message: 'Pago cancelado. No se realizó ningún cargo.', type: 'error' })
+      router.replace('/pricing', undefined, { shallow: true })
+    } else if (router.query.mercadopago === 'true') {
+      setToast({ message: '¡Suscripción en proceso! Tu cuenta se actualizará pronto.', type: 'success' })
       router.replace('/pricing', undefined, { shallow: true })
     }
   }, [router, router.query])
@@ -56,10 +83,14 @@ export default function PricingPage() {
     }
   }, [session])
 
-  const handleUpgrade = async () => {
+  const handleUpgrade = async (provider: PaymentProvider = selectedProvider) => {
     setCheckoutLoading(true)
     try {
-      const res = await fetch('/api/stripe/create-checkout-session', {
+      const endpoint = provider === 'mercadopago' 
+        ? '/api/mercadopago/create-preapproval'
+        : '/api/stripe/create-checkout-session'
+      
+      const res = await fetch(endpoint, {
         method: 'POST',
       })
       const data = await res.json()
@@ -202,13 +233,44 @@ export default function PricingPage() {
                     {portalLoading ? 'Cargando...' : 'Administrar suscripción'}
                   </button>
                 ) : (
-                  <button
-                    onClick={handleUpgrade}
-                    disabled={checkoutLoading}
-                    className="w-full py-3 px-4 bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg font-semibold transition-colors disabled:opacity-50"
-                  >
-                    {checkoutLoading ? 'Procesando...' : 'Actualizar a Premium'}
-                  </button>
+                  <div className="space-y-3">
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setSelectedProvider('stripe')}
+                        className={`flex-1 py-2 px-3 rounded-lg border-2 text-sm font-medium transition-colors ${
+                          selectedProvider === 'stripe'
+                            ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
+                            : 'border-gray-200 hover:border-gray-300 text-gray-600'
+                        }`}
+                      >
+                        💳 Stripe
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedProvider('mercadopago')}
+                        className={`flex-1 py-2 px-3 rounded-lg border-2 text-sm font-medium transition-colors ${
+                          selectedProvider === 'mercadopago'
+                            ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
+                            : 'border-gray-200 hover:border-gray-300 text-gray-600'
+                        }`}
+                      >
+                        🌎 MercadoPago
+                      </button>
+                    </div>
+                    {detectedRegion === 'latam' && selectedProvider === 'mercadopago' && (
+                      <p className="text-xs text-gray-500 text-center">
+                        Recomendado para América Latina
+                      </p>
+                    )}
+                    <button
+                      onClick={() => handleUpgrade(selectedProvider)}
+                      disabled={checkoutLoading}
+                      className="w-full py-3 px-4 bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg font-semibold transition-colors disabled:opacity-50"
+                    >
+                      {checkoutLoading ? 'Procesando...' : selectedProvider === 'mercadopago' ? 'Pagar con MercadoPago' : 'Actualizar a Premium'}
+                    </button>
+                  </div>
                 )}
               </div>
             </div>
