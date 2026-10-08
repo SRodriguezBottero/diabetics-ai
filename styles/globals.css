@@ -39,15 +39,17 @@
 
 @layer components {
   .app-shell {
-    min-height: 100dvh;
+    height: 100dvh;
     display: flex;
     flex-direction: column;
   }
 
   .app-content {
     flex: 1;
+    min-height: 0;
     overflow-y: auto;
-    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    background: linear-gradient(to bottom, theme('colors.gray.100'), white);
   }
 
   .pb-nav {
