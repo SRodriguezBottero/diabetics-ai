@@ -143,7 +143,7 @@ export default function Home() {
         <div
           role="status"
           aria-live="polite"
-          className={`fixed left-4 right-4 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 bottom-24 px-5 py-3 rounded-xl shadow-lg z-50 animate-fade-in ${
+          className={`fixed left-4 right-4 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 toast-container px-5 py-3 rounded-xl shadow-lg z-50 animate-fade-in ${
             toast.type === 'success'
               ? 'bg-emerald-800 text-white'
               : toast.type === 'warning'

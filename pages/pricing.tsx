@@ -306,7 +306,7 @@ export default function PricingPage() {
           <div
             role="status"
             aria-live="polite"
-            className={`fixed bottom-8 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-lg shadow-lg z-50 ${
+            className={`fixed toast-container left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-lg shadow-lg z-50 ${
               toast.type === 'success' ? 'bg-emerald-800 text-white' : 'bg-red-700 text-white'
             }`}
           >
