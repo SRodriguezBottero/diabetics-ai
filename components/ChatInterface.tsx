@@ -165,7 +165,7 @@ export default function ChatInterface() {
         <div
           role="status"
           aria-live="polite"
-          className="fixed left-1/2 bottom-8 transform -translate-x-1/2 bg-emerald-800 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-fade-in"
+          className="fixed left-1/2 toast-container transform -translate-x-1/2 bg-emerald-800 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-fade-in"
         >
           {toast}
         </div>
