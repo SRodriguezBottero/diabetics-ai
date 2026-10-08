@@ -130,7 +130,10 @@ export default function PricingPage() {
   const isPremium = subscription?.isPremium
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-100 to-white py-10 px-4">
+    <div 
+      className="min-h-screen bg-gradient-to-b from-gray-100 to-white pb-10 px-4"
+      style={{ paddingTop: 'calc(2.5rem + var(--safe-area-top))' }}
+    >
       <Head>
         <title>Diabetics-AI | Planes</title>
       </Head>
