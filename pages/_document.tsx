@@ -9,8 +9,11 @@ export default function Document() {
         
         {/* Default document title — pages override via next/head */}
         <title>Diabetics-AI</title>
-        {/* Theme Color */}
-        <meta name="theme-color" content="#6366f1" />
+        
+        {/* Theme Color - per color scheme for mobile-native feel */}
+        <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff" />
+        <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1f2937" />
+        <meta name="color-scheme" content="light dark" />
         <meta name="msapplication-TileColor" content="#6366f1" />
         
         {/* Favicon */}
@@ -26,7 +29,7 @@ export default function Document() {
         
         {/* Apple PWA Meta Tags */}
         <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="apple-mobile-web-app-title" content="DiabeticsAI" />
         
         {/* Microsoft Tile */}

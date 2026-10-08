@@ -1,20 +1,11 @@
 import { useState, useEffect } from 'react'
-import Head from 'next/head'
-import { useSession, signOut } from 'next-auth/react'
+import { useSession } from 'next-auth/react'
 import { useTranslation } from 'react-i18next'
 import { serverSideTranslations } from 'next-i18next/pages/serverSideTranslations'
 import { GetStaticProps } from 'next'
-import ChatInterface from '../components/ChatInterface'
+import AppLayout from '../components/AppLayout'
 import RecentReadings from '../components/RecentReadings'
-import HistoryChart from '../components/HistoryChart'
-import AIInsights from '../components/AIInsights'
-import ExportData from '../components/ExportData'
-import ShareWithDoctor from '../components/ShareWithDoctor'
-import MealClassifier from '../components/MealClassifier'
 import PlanIndicator from '../components/PlanIndicator'
-import UsageMeter from '../components/UsageMeter'
-import LanguageSwitcher from '../components/LanguageSwitcher'
-import Reminder from '../components/Reminder'
 
 interface ToastMessage {
   text: string
@@ -92,45 +83,31 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-100 to-white py-6 px-2 sm:py-10 sm:px-4 lg:px-8">
-      <Head>
-        <title>{t('app.pageTitleHome')}</title>
-      </Head>
-      <div className="max-w-3xl mx-auto space-y-6 sm:space-y-8">
-        <header className="flex justify-between items-center flex-wrap gap-2">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-indigo-700">
-              {t('app.title')}
-            </h1>
-            {!isOnline && (
-              <p className="text-sm text-amber-800 mt-1">
-                {t('offline.mode')}
-              </p>
-            )}
-          </div>
-          <div className="flex items-center gap-3 flex-wrap">
-            <LanguageSwitcher />
-            <PlanIndicator />
-            <span className="text-sm text-gray-600 hidden sm:inline">
-              {session?.user?.email}
-            </span>
-            <button
-              type="button"
-              onClick={() => signOut({ callbackUrl: '/login' })}
-              className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-3 py-1.5 rounded-md text-sm font-medium"
-            >
-              {t('auth.signOut')}
-            </button>
-          </div>
-        </header>
+    <AppLayout title={t('app.pageTitleHome')}>
+      <div className="min-h-full bg-gradient-to-b from-gray-100 to-white py-4 px-3 sm:py-6 sm:px-4">
+        <div className="max-w-3xl mx-auto space-y-4 sm:space-y-6">
+          <header className="flex justify-between items-center flex-wrap gap-2">
+            <div>
+              <h1 className="text-xl sm:text-2xl font-bold text-indigo-700">
+                {t('app.title')}
+              </h1>
+              {!isOnline && (
+                <p className="text-sm text-amber-800 mt-1">
+                  {t('offline.mode')}
+                </p>
+              )}
+            </div>
+            <div className="flex items-center gap-2">
+              <PlanIndicator />
+              <span className="text-sm text-gray-500 hidden sm:inline truncate max-w-[160px]">
+                {session?.user?.email}
+              </span>
+            </div>
+          </header>
 
-        <UsageMeter />
-        <Reminder />
-
-        <section className="bg-white shadow-md rounded-lg p-4 sm:p-6 space-y-4 sm:space-y-6">
-          <div>
-            <h2 className="text-base sm:text-lg font-semibold">{t('readings.addNew')}</h2>
-            <div className="mt-2 flex flex-col sm:flex-row gap-2">
+          <section className="bg-white shadow-md rounded-xl p-4 sm:p-5">
+            <h2 className="text-base sm:text-lg font-semibold mb-3">{t('readings.addNew')}</h2>
+            <div className="flex flex-col sm:flex-row gap-3">
               <label htmlFor="glucose-value" className="sr-only">
                 {t('readings.glucoseLevel')}
               </label>
@@ -138,7 +115,7 @@ export default function Home() {
                 id="glucose-value"
                 type="number"
                 placeholder={t('readings.glucoseLevel')}
-                className="flex-1 border-gray-300 rounded-md px-3 py-3 text-base sm:text-sm w-full sm:w-auto"
+                className="flex-1 border border-gray-300 rounded-xl px-4 py-3 text-base focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-shadow"
                 value={value}
                 onChange={e => setValue(e.target.value)}
                 onKeyPress={handleKeyPress}
@@ -146,37 +123,27 @@ export default function Home() {
                 aria-label={t('readings.glucoseLevel')}
               />
               <div className="flex gap-2 items-center">
-                <span className="text-sm text-gray-600">{t('readings.unit')}</span>
+                <span className="text-sm text-gray-500">{t('readings.unit')}</span>
                 <button
                   type="button"
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-3 sm:py-2 rounded-md w-full sm:w-auto font-semibold transition-colors"
+                  className="btn-primary flex-1 sm:flex-none bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl font-semibold"
                   onClick={addReading}
                 >
                   {t('readings.add')}
                 </button>
               </div>
             </div>
-          </div>
+          </section>
 
-          <div>
-            <h2 className="text-base sm:text-lg font-semibold">{t('chat.title')}</h2>
-            <ChatInterface />
-          </div>
-        </section>
-
-        <RecentReadings />
-        <HistoryChart />
-        <AIInsights />
-        <ExportData />
-        <ShareWithDoctor />
-        <MealClassifier />
+          <RecentReadings />
+        </div>
       </div>
 
       {toast && (
         <div
           role="status"
           aria-live="polite"
-          className={`fixed left-1/2 bottom-8 transform -translate-x-1/2 px-6 py-3 rounded-lg shadow-lg z-50 animate-fade-in ${
+          className={`fixed left-4 right-4 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 bottom-24 px-5 py-3 rounded-xl shadow-lg z-50 animate-fade-in ${
             toast.type === 'success'
               ? 'bg-emerald-800 text-white'
               : toast.type === 'warning'
@@ -184,9 +151,9 @@ export default function Home() {
               : 'bg-red-700 text-white'
           }`}
         >
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 justify-center">
             {toast.type === 'warning' && (
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
             )}
@@ -194,7 +161,7 @@ export default function Home() {
           </div>
         </div>
       )}
-    </div>
+    </AppLayout>
   )
 }
 

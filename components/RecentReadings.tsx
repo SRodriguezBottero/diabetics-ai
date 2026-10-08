@@ -11,7 +11,11 @@ interface Reading {
   pending?: boolean
 }
 
-export default function RecentReadings() {
+interface RecentReadingsProps {
+  showAll?: boolean
+}
+
+export default function RecentReadings({ showAll = false }: RecentReadingsProps) {
   const { t } = useTranslation('common')
   const { locale } = useRouter()
   const [items, setItems] = useState<Reading[]>([])
@@ -75,8 +79,8 @@ export default function RecentReadings() {
 
   if (isLoading && !items.length) {
     return (
-      <section className="bg-white shadow-md rounded-lg p-6">
-        <h2 className="text-lg font-semibold mb-4">{t('readings.recent')}</h2>
+      <section className="bg-white shadow-md rounded-xl p-4 sm:p-5">
+        <h2 className="text-base sm:text-lg font-semibold mb-4">{t('readings.recent')}</h2>
         <div className="animate-pulse space-y-3">
           {[1, 2, 3].map(i => (
             <div key={i} className="h-8 bg-gray-100 rounded" />
@@ -90,10 +94,12 @@ export default function RecentReadings() {
 
   const dateLocale = locale === 'en' ? enUS : es
 
+  const displayItems = showAll ? [...items].reverse() : items.slice(-5).reverse()
+
   return (
-    <section className="bg-white shadow-md rounded-lg p-6">
+    <section className="bg-white shadow-md rounded-xl p-4 sm:p-5">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold">{t('readings.recent')}</h2>
+        <h2 className="text-base sm:text-lg font-semibold">{t('readings.recent')}</h2>
         {isOffline && (
           <span className="inline-flex items-center gap-1.5 text-xs text-amber-600 bg-amber-50 px-2 py-1 rounded-full">
             <span className="w-1.5 h-1.5 bg-amber-500 rounded-full" />
@@ -101,11 +107,8 @@ export default function RecentReadings() {
           </span>
         )}
       </div>
-      <ul className="divide-y divide-gray-200">
-        {items
-          .slice(-5)
-          .reverse()
-          .map((r, i) => (
+      <ul className="divide-y divide-gray-100">
+        {displayItems.map((r, i) => (
             <li key={r.id || i} className="py-2 flex justify-between items-center text-sm">
               <div className="flex items-center gap-2">
                 <span className="font-medium text-indigo-700">{r.value} mg/dL</span>

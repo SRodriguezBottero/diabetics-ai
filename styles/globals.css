@@ -2,6 +2,83 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --nav-height: 4rem;
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: 100%;
+    overscroll-behavior: none;
+  }
+
+  body {
+    overscroll-behavior: none;
+  }
+
+  input, textarea, select {
+    font-size: 16px;
+  }
+
+  button, a, [role="button"] {
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  @supports (padding: env(safe-area-inset-bottom)) {
+    body {
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+  }
+}
+
+@layer components {
+  .app-shell {
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .app-content {
+    flex: 1;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .pb-nav {
+    padding-bottom: calc(var(--nav-height) + var(--safe-area-bottom));
+  }
+
+  .bottom-nav {
+    padding-bottom: var(--safe-area-bottom);
+  }
+
+  .bottom-nav-item {
+    transition: transform 100ms var(--ease-out), color 150ms var(--ease-out);
+  }
+
+  .bottom-nav-item:active {
+    transform: scale(0.95);
+  }
+
+  .safe-area-bottom {
+    height: var(--safe-area-bottom);
+  }
+
+  .btn-primary {
+    transition: transform 160ms var(--ease-out), background-color 160ms var(--ease-out);
+  }
+
+  .btn-primary:active {
+    transform: scale(0.97);
+  }
+}
+
 @layer utilities {
   .sr-only {
     position: absolute;
@@ -16,11 +93,11 @@
   }
 
   .animate-slide-up {
-    animation: slideUp 0.3s ease-out;
+    animation: slideUp 0.25s var(--ease-out);
   }
   
   .animate-fade-in {
-    animation: fadeIn 0.3s ease-out;
+    animation: fadeIn 0.2s var(--ease-out);
   }
   
   .animate-pulse-slow {
@@ -31,7 +108,7 @@
 @keyframes slideUp {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(12px);
   }
   to {
     opacity: 1;
@@ -48,10 +125,12 @@
   }
 }
 
-@layer base {
-  @supports (padding: env(safe-area-inset-bottom)) {
-    body {
-      padding-bottom: env(safe-area-inset-bottom);
-    }
+@media (hover: hover) and (pointer: fine) {
+  .btn-primary:hover {
+    filter: brightness(1.05);
+  }
+
+  .bottom-nav-item:hover {
+    color: theme('colors.indigo.500');
   }
 }

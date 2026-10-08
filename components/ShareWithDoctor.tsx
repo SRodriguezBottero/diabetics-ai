@@ -84,48 +84,44 @@ export default function ShareWithDoctor() {
 
   if (isPremium === null) {
     return (
-      <section className="bg-white shadow rounded-lg p-4 mb-4">
-        <div className="text-gray-400 text-sm">Cargando...</div>
-      </section>
+      <div className="text-gray-400 text-sm py-2">{t('app.loading')}</div>
     );
   }
 
   if (!isPremium) {
     return (
-      <section className="bg-white shadow rounded-lg p-4 mb-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h3 className="font-semibold text-gray-800">Compartir con Doctor</h3>
-            <p className="text-sm text-gray-500 mt-1">
-              Genera un reporte PDF profesional para tu médico
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
-            <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-amber-100 text-amber-800">
-              ⭐ Premium
-            </span>
-            <Link
-              href="/pricing"
-              className="bg-emerald-700 hover:bg-emerald-800 text-white px-4 py-2 rounded-md font-semibold text-sm"
-            >
-              Actualizar
-            </Link>
-          </div>
+      <div className="flex items-center justify-between flex-wrap gap-3">
+        <div>
+          <h3 className="font-medium text-gray-800">{t('share.button')}</h3>
+          <p className="text-sm text-gray-500 mt-0.5">
+            {t('share.pdfDescription')}
+          </p>
         </div>
-      </section>
+        <div className="flex items-center gap-3">
+          <span className="inline-flex items-center px-2 py-1 rounded-lg text-xs font-medium bg-amber-100 text-amber-800">
+            ⭐ Premium
+          </span>
+          <Link
+            href="/pricing"
+            className="btn-primary bg-emerald-700 hover:bg-emerald-800 text-white px-4 py-2 rounded-xl font-semibold text-sm"
+          >
+            {t('profile.managePlan')}
+          </Link>
+        </div>
+      </div>
     );
   }
 
   return (
-    <section className="bg-white shadow rounded-lg p-4 mb-4 flex items-center gap-4">
+    <div className="flex items-center gap-4">
       <button
-        className="bg-emerald-700 hover:bg-emerald-800 text-white px-4 py-2 rounded-md font-semibold"
+        className="btn-primary bg-emerald-700 hover:bg-emerald-800 text-white px-4 py-2 rounded-xl font-semibold"
         onClick={handleShare}
         disabled={loading}
       >
         {loading ? t('share.generating') : t('share.button')}
       </button>
       {error && <span className="text-red-500 text-sm">{error}</span>}
-    </section>
+    </div>
   );
 } 

@@ -39,15 +39,15 @@ export default function ExportData() {
   };
 
   return (
-    <section className="bg-white shadow rounded-lg p-4 mb-4 flex items-center gap-4">
+    <div className="flex items-center gap-4">
       <button
-        className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md font-semibold"
+        className="btn-primary bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl font-semibold"
         onClick={handleExport}
         disabled={downloading}
       >
         {downloading ? t('export.exporting') : t('export.button')}
       </button>
       {error && <span className="text-red-700 text-sm" role="alert">{error}</span>}
-    </section>
+    </div>
   );
 } 

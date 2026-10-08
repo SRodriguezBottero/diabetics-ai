@@ -5,7 +5,22 @@
     "pageTitleHome": "Diabetics-AI | Inicio",
     "pageTitleLogin": "Diabetics-AI | Acceso",
     "pageTitlePricing": "Diabetics-AI | Planes",
-    "pageTitleHistory": "Diabetics-AI | Historial"
+    "pageTitleHistory": "Diabetics-AI | Historial",
+    "pageTitleAI": "Diabetics-AI | Asistente IA",
+    "pageTitleProfile": "Diabetics-AI | Perfil"
+  },
+  "nav": {
+    "home": "Inicio",
+    "history": "Historial",
+    "ai": "IA",
+    "profile": "Perfil",
+    "ariaLabel": "Navegación principal"
+  },
+  "profile": {
+    "settings": "Ajustes",
+    "data": "Tus datos",
+    "subscription": "Suscripción",
+    "managePlan": "Gestionar suscripción"
   },
   "auth": {
     "signOut": "Cerrar sesión",
@@ -78,7 +93,8 @@
     "pdfSummary": "Resumen AI:",
     "pdfNoSummary": "Sin resumen disponible.",
     "pdfReadings": "Últimas mediciones:",
-    "pdfDateHeader": "Fecha y hora"
+    "pdfDateHeader": "Fecha y hora",
+    "pdfDescription": "Genera un reporte PDF profesional para tu médico"
   },
   "reminder": {
     "title": "⏰ Recordatorio diario",
