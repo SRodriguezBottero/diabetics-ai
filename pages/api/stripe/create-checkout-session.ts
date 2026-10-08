@@ -48,7 +48,7 @@ export default async function handler(
     const checkoutSession = await stripe.checkout.sessions.create({
       customer: customerId,
       mode: 'subscription',
-      payment_method_types: ['card'],
+      managed_payments: { enabled: false },
       line_items: [
         {
           price: priceId,

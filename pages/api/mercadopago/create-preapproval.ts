@@ -1,7 +1,14 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '../auth/[...nextauth]'
-import { preApproval, PREMIUM_PRICE_USD } from '../../../lib/mercadopago'
+import {
+  MERCADOPAGO_CURRENCY,
+  MercadoPagoPayerError,
+  preApproval,
+  premiumPriceInUyu,
+  resolveMercadoPagoBackUrl,
+  resolveMercadoPagoPayerEmail,
+} from '../../../lib/mercadopago'
 import prisma from '../../../lib/prisma'
 
 export default async function handler(
@@ -31,7 +38,7 @@ export default async function handler(
       return res.status(400).json({ error: 'User email not found' })
     }
 
-    const baseUrl = req.headers.origin || process.env.NEXTAUTH_URL || 'http://localhost:3000'
+    const origin = typeof req.headers.origin === 'string' ? req.headers.origin : undefined
 
     const preapprovalData = await preApproval.create({
       body: {
@@ -39,12 +46,13 @@ export default async function handler(
         auto_recurring: {
           frequency: 1,
           frequency_type: 'months',
-          transaction_amount: PREMIUM_PRICE_USD,
-          currency_id: 'USD',
+          transaction_amount: await premiumPriceInUyu(),
+          currency_id: MERCADOPAGO_CURRENCY,
         },
-        payer_email: user.email,
-        back_url: `${baseUrl}/pricing?mercadopago=true`,
+        payer_email: await resolveMercadoPagoPayerEmail(user.email),
+        back_url: resolveMercadoPagoBackUrl(origin),
         external_reference: session.user.id,
+        status: 'pending',
       },
     })
 
@@ -61,6 +69,9 @@ export default async function handler(
     res.status(200).json({ url: preapprovalData.init_point })
   } catch (error) {
     console.error('MercadoPago preapproval error:', error)
+    if (error instanceof MercadoPagoPayerError) {
+      return res.status(400).json({ error: error.message })
+    }
     res.status(500).json({ error: 'Error creating MercadoPago subscription' })
   }
 }

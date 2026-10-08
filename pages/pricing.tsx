@@ -97,7 +97,7 @@ export default function PricingPage() {
       if (data.url) {
         window.location.href = data.url
       } else {
-        setToast({ message: 'Error al crear sesión de pago', type: 'error' })
+        setToast({ message: data.error || 'Error al crear sesión de pago', type: 'error' })
       }
     } catch (error) {
       console.error('Checkout error:', error)
