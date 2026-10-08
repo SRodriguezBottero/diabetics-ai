@@ -48,6 +48,7 @@
     flex: 1;
     overflow-y: auto;
     overscroll-behavior: contain;
+    background: linear-gradient(to bottom, theme('colors.gray.100'), white);
   }
 
   .pb-nav {

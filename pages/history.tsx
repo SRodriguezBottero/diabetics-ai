@@ -10,7 +10,7 @@ export default function History() {
 
   return (
     <AppLayout title={t('app.pageTitleHistory')}>
-      <div className="min-h-full bg-gradient-to-b from-gray-100 to-white py-4 px-3 sm:py-6 sm:px-4">
+      <div className="py-4 px-3 sm:py-6 sm:px-4">
         <div className="max-w-3xl mx-auto space-y-4 sm:space-y-6">
           <header className="mb-4">
             <h1 className="text-xl sm:text-2xl font-bold text-indigo-700">
