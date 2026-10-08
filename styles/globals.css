@@ -6,6 +6,7 @@
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
   --nav-height: 4rem;
+  --safe-area-top: env(safe-area-inset-top, 0px);
   --safe-area-bottom: env(safe-area-inset-bottom, 0px);
 }
 
@@ -50,6 +51,7 @@
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     background: linear-gradient(to bottom, theme('colors.gray.100'), white);
+    padding-top: var(--safe-area-top);
   }
 
   .pb-nav {
@@ -61,11 +63,27 @@
   }
 
   .bottom-nav-item {
-    transition: transform 100ms var(--ease-out), color 150ms var(--ease-out);
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    cursor: pointer;
   }
 
-  .bottom-nav-item:active {
-    transform: scale(0.95);
+  @media (pointer: coarse) {
+    .bottom-nav-item:active {
+      transform: scale(0.95);
+      transition: transform 50ms var(--ease-out);
+    }
+  }
+
+  @media (pointer: fine) {
+    .bottom-nav-item {
+      transition: transform 100ms var(--ease-out), color 150ms var(--ease-out);
+    }
+    
+    .bottom-nav-item:active {
+      transform: scale(0.95);
+    }
   }
 
   .safe-area-bottom {

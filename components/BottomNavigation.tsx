@@ -65,12 +65,13 @@ export default function BottomNavigation() {
             <Link
               key={tab.path}
               href={tab.path}
-              className={`bottom-nav-item flex flex-col items-center justify-center flex-1 relative transition-colors duration-150 ease-out ${
+              className={`bottom-nav-item flex flex-col items-center justify-center flex-1 relative ${
                 isActive
                   ? 'text-indigo-600'
                   : 'text-gray-500'
               }`}
               aria-current={isActive ? 'page' : undefined}
+              draggable={false}
             >
               <span
                 className={`transition-transform duration-150 ease-out ${
